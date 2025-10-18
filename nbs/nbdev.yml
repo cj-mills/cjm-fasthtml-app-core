@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "cjm-fasthtml-app-core"
+  site-url: "https://cj-mills.github.io/cjm-fasthtml-app-core"
+  description: "Core utilities and reusable patterns for FastHTML applications including page layouts, HTMX request handling, alerts, and navbar components."
+  repo-branch: main
+  repo-url: "https://github.com/cj-mills/cjm-fasthtml-app-core"
