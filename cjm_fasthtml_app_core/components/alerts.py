@@ -22,8 +22,8 @@ from ..core.html_ids import AppHtmlIds
 
 # %% ../../nbs/components/alerts.ipynb 6
 def _create_auto_dismiss_script(
-    timeout_ms: int = 3000  # Time in milliseconds before auto-dismiss
-) -> Script:  # Script element for auto-dismissing alerts
+    timeout_ms:int=3000 # Time in milliseconds before auto-dismiss
+) -> FT: # Script element for auto-dismissing alerts
     """Create a script that auto-dismisses the alert after a timeout."""
     return Script(f"""
         // Clear any existing timeout
@@ -55,9 +55,9 @@ def _create_auto_dismiss_script(
 
 # %% ../../nbs/components/alerts.ipynb 9
 def create_success_alert(
-    message: str,  # The success message to display
-    timeout_ms: int = 3000  # Time in milliseconds before auto-dismiss
-) -> Div:  # Div element containing the success alert
+    message:str, # The success message to display
+    timeout_ms:int=3000 # Time in milliseconds before auto-dismiss
+) -> FT: # Div element containing the success alert
     """Create a success alert that auto-dismisses."""
     return Div(
         Div(
@@ -87,9 +87,9 @@ def create_success_alert(
 
 # %% ../../nbs/components/alerts.ipynb 13
 def create_error_alert(
-    message: str,  # The error message to display
-    details: Optional[str] = None  # Optional additional details text
-) -> Div:  # Div element containing the error alert
+    message:str, # The error message to display
+    details:Optional[str]=None # Optional additional details text
+) -> FT: # Div element containing the error alert
     """Create an error alert with optional details."""
     content = [
         Svg(
@@ -167,9 +167,9 @@ def create_warning_alert(
 
 # %% ../../nbs/components/alerts.ipynb 21
 def create_info_alert(
-    message: str,  # The info message to display
-    details: Optional[str] = None  # Optional additional details text
-) -> Div:  # Div element containing the info alert
+    message:str, # The info message to display
+    details:Optional[str]=None # Optional additional details text
+) -> FT: # Div element containing the info alert
     """Create an info alert with optional details."""
     content = [
         Svg(

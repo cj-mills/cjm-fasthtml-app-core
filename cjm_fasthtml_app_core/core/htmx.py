@@ -11,49 +11,20 @@ from fasthtml.common import *
 
 # %% ../../nbs/core/htmx.ipynb 6
 def is_htmx_request(
-    request  # FastHTML request object
-) -> bool:  # True if request is from HTMX
-    """Check if a request is an HTMX request.
-    
-    HTMX requests include the 'HX-Request' header set to 'true'.
-    This is useful for conditionally returning partial HTML vs full pages.
-    """
+    request # FastHTML request object
+) -> bool: # True if request is from HTMX
+    """Check if a request is an HTMX request."""
     return bool(request.headers.get('HX-Request'))
 
-# %% ../../nbs/core/htmx.ipynb 10
+# %% ../../nbs/core/htmx.ipynb 11
 def handle_htmx_request(
-    request,  # FastHTML request object
-    content_fn: Callable,  # Function to generate content
-    *args,  # Positional arguments for content_fn
-    wrap_fn: Optional[Callable] = None,  # Optional wrapper function for full page requests
-    **kwargs  # Keyword arguments for content_fn
-):  # Content or wrapped content based on request type
-    """Handle HTMX vs full page response pattern.
-    
-    This is a common pattern where HTMX requests return just the content,
-    while full page requests wrap the content with page layout.
-    
-    Args:
-        request: FastHTML request object
-        content_fn: Function to generate the main content
-        *args: Positional arguments passed to content_fn
-        wrap_fn: Optional function to wrap content for full page requests
-        **kwargs: Keyword arguments passed to content_fn
-    
-    Returns:
-        Content (for HTMX requests) or wrapped content (for full page requests)
-    
-    Example:
-        ```python
-        @app.get("/dashboard")
-        def dashboard(request):
-            return handle_htmx_request(
-                request,
-                dashboard_content,
-                wrap_fn=wrap_with_layout
-            )
-        ```
-    """
+    request, # FastHTML request object
+    content_fn:Callable, # Function to generate content
+    *args, # Positional arguments for content_fn
+    wrap_fn:Optional[Callable]=None, # Optional wrapper function for full page requests
+    **kwargs # Keyword arguments for content_fn
+): # Content or wrapped content based on request type
+    """Handle HTMX vs full page response pattern."""
     content = content_fn(*args, **kwargs)
     
     # Check if this is an HTMX request

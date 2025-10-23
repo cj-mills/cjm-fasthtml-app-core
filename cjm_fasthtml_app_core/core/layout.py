@@ -6,43 +6,20 @@
 __all__ = ['wrap_with_layout']
 
 # %% ../../nbs/core/layout.ipynb 3
-from typing import Any, Optional
+from typing import Optional
 from fasthtml.common import *
 
 from .html_ids import AppHtmlIds
 
 # %% ../../nbs/core/layout.ipynb 6
 def wrap_with_layout(
-    content: Any,  # The main content to display
-    navbar: Optional[Any] = None,  # Optional navbar component
-    footer: Optional[Any] = None,  # Optional footer component
-    container_id: str = AppHtmlIds.MAIN_CONTENT,  # ID for the main content container
-    container_tag: str = "div"  # HTML tag for the container (div, main, section, etc.)
-) -> Any:  # Main element with navbar and content
-    """Wrap content with the full page layout including optional navbar and footer.
-    
-    This utility provides a consistent page structure across your application.
-    It wraps your content with optional navbar and footer components.
-    
-    Args:
-        content: The main page content
-        navbar: Optional navbar component (typically from create_navbar)
-        footer: Optional footer component
-        container_id: HTML ID for the main content container
-        container_tag: HTML tag to use for the container
-    
-    Returns:
-        Main element containing navbar, content, and footer
-    
-    Example:
-        ```python
-        from cjm_fasthtml_app_core.components.navbar import create_navbar
-        from cjm_fasthtml_app_core.core.layout import wrap_with_layout
-        
-        my_navbar = create_navbar(title="My App", nav_items=[...])
-        page = wrap_with_layout(my_content, navbar=my_navbar)
-        ```
-    """
+    content:FT, # The main content to display
+    navbar:Optional[FT]=None, # Optional navbar component
+    footer:Optional[FT]=None, # Optional footer component
+    container_id:str=AppHtmlIds.MAIN_CONTENT, # ID for the main content container
+    container_tag:str="div" # HTML tag for the container
+) -> FT: # Main element with navbar and content
+    """Wrap content with the full page layout including optional navbar and footer."""
     # Create container element based on tag type
     tag_fn = {
         'div': Div,

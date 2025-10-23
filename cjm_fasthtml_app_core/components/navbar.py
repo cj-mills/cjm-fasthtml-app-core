@@ -28,33 +28,11 @@ from ..core.html_ids import AppHtmlIds
 
 # %% ../../nbs/components/navbar.ipynb 6
 def create_nav_link(
-    label: str,  # Link text to display
-    route,  # FastHTML route object with .to() method
-    target_id: str = AppHtmlIds.MAIN_CONTENT  # HTMX target container ID
-) -> A:  # Anchor element with HTMX attributes
-    """Create a navigation link with HTMX attributes for SPA-like behavior.
-    
-    Creates an anchor element that uses HTMX to load content without full page reload.
-    
-    Args:
-        label: Text to display for the link
-        route: FastHTML route object (should have .to() method)
-        target_id: HTML ID of the container to update (without #)
-    
-    Returns:
-        Anchor element configured for HTMX navigation
-    
-    Example:
-        ```python
-        from fasthtml.common import *
-        app, rt = fast_app()
-        
-        @rt("/about")
-        def about(): ...
-        
-        link = create_nav_link("About", about)
-        ```
-    """
+    label:str, # Link text to display
+    route, # FastHTML route object with .to() method
+    target_id:str=AppHtmlIds.MAIN_CONTENT # HTMX target container ID
+) -> FT: # Anchor element with HTMX attributes
+    """Create a navigation link with HTMX attributes for SPA-like behavior."""
     return A(
         label,
         href=route.to(),
@@ -63,47 +41,16 @@ def create_nav_link(
         hx_push_url="true",
     )
 
-# %% ../../nbs/components/navbar.ipynb 10
+# %% ../../nbs/components/navbar.ipynb 11
 def create_navbar(
-    title: str,  # Application title
-    nav_items: List[Tuple[str, Any]],  # List of (label, route) tuples
-    home_route: Optional[Any] = None,  # Optional home route for title link
-    theme_selector: bool = True,  # Whether to include theme selector
-    target_id: str = AppHtmlIds.MAIN_CONTENT,  # HTMX target container ID
-    **navbar_kwargs  # Additional kwargs for navbar styling
-) -> Div:  # Navbar component
-    """Create a responsive navigation bar with mobile dropdown menu.
-    
-    Creates a DaisyUI navbar with:
-    - Responsive design (mobile dropdown, desktop horizontal menu)
-    - Optional theme selector
-    - HTMX-enabled navigation links
-    - Clickable title that links to home
-    
-    Args:
-        title: Application title displayed in navbar
-        nav_items: List of (label, route) tuples for navigation links
-        home_route: Optional route for title click (defaults to first nav item)
-        theme_selector: Whether to show DaisyUI theme selector
-        target_id: HTML ID of the content container to update
-        **navbar_kwargs: Additional styling classes/attributes for navbar
-    
-    Returns:
-        Complete navbar component wrapped in Div
-    
-    Example:
-        ```python
-        navbar = create_navbar(
-            title="My App",
-            nav_items=[
-                ("Home", home_route),
-                ("About", about_route),
-                ("Settings", settings_route)
-            ],
-            theme_selector=True
-        )
-        ```
-    """
+    title:str, # Application title
+    nav_items:List[Tuple[str, Any]], # List of (label, route) tuples
+    home_route:Optional[Any]=None, # Optional home route for title link
+    theme_selector:bool=True, # Whether to include theme selector
+    target_id:str=AppHtmlIds.MAIN_CONTENT, # HTMX target container ID
+    **navbar_kwargs # Additional kwargs for navbar styling
+) -> FT: # Navbar component
+    """Create a responsive navigation bar with mobile dropdown menu."""
     # Use first nav item as home if not specified
     if home_route is None and nav_items:
         home_route = nav_items[0][1]

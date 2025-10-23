@@ -9,33 +9,15 @@ __all__ = ['AppHtmlIds']
 from typing import Final
 
 class AppHtmlIds:
-    """Base HTML ID constants for FastHTML applications.
-    
-    This class provides centralized HTML ID constants that are commonly used
-    across FastHTML applications. All IDs are defined as class attributes
-    for IDE autocomplete and type checking.
-    
-    For IDE Support:
-        IDEs like VS Code with Pylance will autocomplete these attributes and warn
-        if you try to access non-existent attributes. To add app-specific IDs,
-        extend this class:
-        
-        ```python
-        class MyAppHtmlIds(AppHtmlIds):
-            CUSTOM_SECTION = "custom-section"
-            SIDEBAR = "sidebar"
-        ```
-    
-    Note:
-        The typing.Final annotation indicates these are constants that shouldn't
-        be reassigned at runtime.
-    """
+    """Base HTML ID constants for FastHTML applications."""
 
     # Main content containers
     MAIN_CONTENT: Final[str] = "main-content"
     ALERT_CONTAINER: Final[str] = "alert-container"
 
     @staticmethod
-    def as_selector(id_str: str) -> str:
-        """Convert an ID to a CSS selector format (with #)."""
+    def as_selector(
+        id_str:str # The HTML ID to convert
+    ) -> str: # CSS selector with # prefix
+        """Convert an ID to a CSS selector format."""
         return f"#{id_str}"
