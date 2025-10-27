@@ -15,12 +15,13 @@ pip install cjm_fasthtml_app_core
     ├── components/ (2)
     │   ├── alerts.ipynb  # Alert components for displaying success, error, warning, and info messages
     │   └── navbar.ipynb  # Responsive navigation bar components with mobile support
-    └── core/ (3)
+    └── core/ (4)
         ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications
         ├── htmx.ipynb      # Utilities for handling HTMX requests and responses
-        └── layout.ipynb    # Page layout utilities for wrapping content with common page structure
+        ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure
+        └── routing.ipynb   # Routing utilities for FastHTML applications
 
-Total: 5 notebooks across 2 directories
+Total: 6 notebooks across 2 directories
 
 ## Module Dependencies
 
@@ -31,6 +32,7 @@ graph LR
     core_html_ids[core.html_ids<br/>HTML IDs]
     core_htmx[core.htmx<br/>HTMX Utilities]
     core_layout[core.layout<br/>Layout]
+    core_routing[core.routing<br/>routing]
 
     components_alerts --> core_html_ids
     components_navbar --> core_html_ids
@@ -221,3 +223,49 @@ def create_navbar(
 ) -> FT: # Navbar component
     "Create a responsive navigation bar with mobile dropdown menu."
 ```
+
+### routing (`routing.ipynb`)
+
+> Routing utilities for FastHTML applications
+
+#### Import
+
+``` python
+from cjm_fasthtml_app_core.core.routing import (
+    register_routes
+)
+```
+
+#### Functions
+
+```` python
+def register_routes(
+    app,  # FastHTML app instance
+    *routers  # One or more APIRouter instances to register
+) -> None
+    """
+    Register multiple APIRouter instances to a FastHTML app at once.
+    
+    This is a convenience function that replaces multiple `.to_app(app)` calls
+    with a single function call.
+    
+    Example:
+        ```python
+        from fasthtml.common import *
+        from cjm_fasthtml_app_core.core.routing import register_routes
+        
+        # Create routers
+        main_ar = APIRouter(prefix="/")
+        settings_ar = APIRouter(prefix="/settings")
+        api_ar = APIRouter(prefix="/api")
+        
+        # Instead of:
+        # main_ar.to_app(app)
+        # settings_ar.to_app(app)
+        # api_ar.to_app(app)
+        
+        # Do this:
+        register_routes(app, main_ar, settings_ar, api_ar)
+        ```
+    """
+````

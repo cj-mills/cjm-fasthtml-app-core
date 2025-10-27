@@ -28,4 +28,6 @@ d = { 'settings': { 'branch': 'main',
                                                  'cjm_fasthtml_app_core.core.htmx.is_htmx_request': ( 'core/htmx.html#is_htmx_request',
                                                                                                       'cjm_fasthtml_app_core/core/htmx.py')},
             'cjm_fasthtml_app_core.core.layout': { 'cjm_fasthtml_app_core.core.layout.wrap_with_layout': ( 'core/layout.html#wrap_with_layout',
-                                                                                                           'cjm_fasthtml_app_core/core/layout.py')}}}
+                                                                                                           'cjm_fasthtml_app_core/core/layout.py')},
+            'cjm_fasthtml_app_core.core.routing': { 'cjm_fasthtml_app_core.core.routing.register_routes': ( 'core/routing.html#register_routes',
+                                                                                                            'cjm_fasthtml_app_core/core/routing.py')}}}
