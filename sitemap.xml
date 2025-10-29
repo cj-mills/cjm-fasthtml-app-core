@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/core/htmx.html</loc>
+    <lastmod>2025-10-29T23:23:40.808Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/core/errors.html</loc>
+    <lastmod>2025-10-29T23:23:40.952Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/core/routing.html</loc>
+    <lastmod>2025-10-29T23:23:40.921Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/components/navbar.html</loc>
+    <lastmod>2025-10-29T23:23:41.009Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/components/alerts.html</loc>
+    <lastmod>2025-10-29T23:23:40.941Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/index.html</loc>
+    <lastmod>2025-10-29T23:23:40.537Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/core/layout.html</loc>
+    <lastmod>2025-10-29T23:23:40.871Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cj-mills.github.io/cjm-fasthtml-app-core/core/html_ids.html</loc>
+    <lastmod>2025-10-29T23:23:40.585Z</lastmod>
+  </url>
+</urlset>
