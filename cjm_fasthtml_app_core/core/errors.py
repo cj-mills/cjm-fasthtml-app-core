@@ -43,22 +43,7 @@ def error_to_alert(
     error: Any,  # Error object (BaseError from cjm-error-handling or standard Exception)
     include_debug_info: bool = False  # Whether to include debug information in the alert
 ) -> FT:  # Alert component (error or warning)
-    """
-    Convert an error to an alert component.
-    
-    - Uses user-friendly message for display
-    - Optionally includes debug information
-    - Maps severity to alert type (error/warning)
-    - Falls back to standard exception str() for non-structured errors
-    
-    Example:
-        ```python
-        try:
-            result = manager.load_plugin(plugin_meta)
-        except PluginError as e:
-            return error_to_alert(e)
-        ```
-    """
+    """Convert an error to an alert component."""
     # Check if it's a structured error from cjm-error-handling
     if _has_error_handling and isinstance(error, BaseError):
         # Get user-friendly message
@@ -84,22 +69,7 @@ def error_to_htmx_response(
     target_id: str = AppHtmlIds.ALERT_CONTAINER,  # ID of element to update with error
     include_debug_info: bool = False  # Whether to include debug information
 ) -> FT:  # Alert component with correct ID for HTMX targeting
-    """
-    Create an HTMX-compatible error response.
-    
-    Returns an alert that HTMX can swap into the target element.
-    
-    Example:
-        ```python
-        @app.post("/save-config")
-        async def save_config(request):
-            try:
-                config = await load_config()
-                return create_success_alert("Saved!")
-            except ConfigurationError as e:
-                return error_to_htmx_response(e)
-        ```
-    """
+    """Create an HTMX-compatible error response."""
     # Get the alert component
     alert_component = error_to_alert(error, include_debug_info)
     
@@ -122,23 +92,7 @@ def create_error_page(
     show_home_link: bool = True,  # Whether to show a link back to home
     home_path: str = "/"  # Path for the home link (defaults to root)
 ) -> FT:  # Div element containing the full error page
-    """
-    Create a full-page error display.
-    
-    Useful for critical errors or standard HTTP error pages (404, 500, etc.).
-    
-    Example:
-        ```python
-        @app.get("/not-found")
-        def not_found():
-            return create_error_page(
-                title="Page Not Found",
-                message="The page you're looking for doesn't exist",
-                details="Error 404",
-                home_path="/dashboard"
-            )
-        ```
-    """
+    """Create a full-page error display."""
     content = [
         # Error icon
         Div(
@@ -223,19 +177,7 @@ def error_to_page(
     show_home_link: bool = True,  # Whether to show a link back to home
     home_path: str = "/"  # Path for the home link (defaults to root)
 ) -> FT:  # Full error page component
-    """
-    Convert an error to a full-page error display.
-    
-    Useful for critical errors that need a dedicated page.
-    
-    Example:
-        ```python
-        try:
-            critical_operation()
-        except CriticalError as e:
-            return error_to_page(e, include_debug_info=True, home_path="/dashboard")
-        ```
-    """
+    """Convert an error to a full-page error display."""
     # Check if it's a structured error
     if _has_error_handling and isinstance(error, BaseError):
         message = error.get_user_message()

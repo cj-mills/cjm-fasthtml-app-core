@@ -12,31 +12,7 @@ from typing import Any
 def register_routes(
     app,  # FastHTML app instance
     *routers  # One or more APIRouter instances to register
-) -> None:
-    """
-    Register multiple APIRouter instances to a FastHTML app at once.
-    
-    This is a convenience function that replaces multiple `.to_app(app)` calls
-    with a single function call.
-    
-    Example:
-        ```python
-        from fasthtml.common import *
-        from cjm_fasthtml_app_core.core.routing import register_routes
-        
-        # Create routers
-        main_ar = APIRouter(prefix="/")
-        settings_ar = APIRouter(prefix="/settings")
-        api_ar = APIRouter(prefix="/api")
-        
-        # Instead of:
-        # main_ar.to_app(app)
-        # settings_ar.to_app(app)
-        # api_ar.to_app(app)
-        
-        # Do this:
-        register_routes(app, main_ar, settings_ar, api_ar)
-        ```
-    """
+) -> None:  # No return value
+    """Register multiple APIRouter instances to a FastHTML app at once."""
     for router in routers:
         router.to_app(app)
