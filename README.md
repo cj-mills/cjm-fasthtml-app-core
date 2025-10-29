@@ -15,13 +15,14 @@ pip install cjm_fasthtml_app_core
     ├── components/ (2)
     │   ├── alerts.ipynb  # Alert components for displaying success, error, warning, and info messages
     │   └── navbar.ipynb  # Responsive navigation bar components with mobile support
-    └── core/ (4)
+    └── core/ (5)
+        ├── errors.ipynb    # Utilities for converting structured errors to FastHTML responses, alerts, and error pages
         ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications
         ├── htmx.ipynb      # Utilities for handling HTMX requests and responses
         ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure
         └── routing.ipynb   # Routing utilities for FastHTML applications
 
-Total: 6 notebooks across 2 directories
+Total: 7 notebooks across 2 directories
 
 ## Module Dependencies
 
@@ -29,6 +30,7 @@ Total: 6 notebooks across 2 directories
 graph LR
     components_alerts[components.alerts<br/>Alerts]
     components_navbar[components.navbar<br/>Navbar]
+    core_errors[core.errors<br/>Error Utilities]
     core_html_ids[core.html_ids<br/>HTML IDs]
     core_htmx[core.htmx<br/>HTMX Utilities]
     core_layout[core.layout<br/>Layout]
@@ -36,10 +38,12 @@ graph LR
 
     components_alerts --> core_html_ids
     components_navbar --> core_html_ids
+    core_errors --> components_alerts
+    core_errors --> core_html_ids
     core_layout --> core_html_ids
 ```
 
-*3 cross-module dependencies detected*
+*5 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -105,6 +109,120 @@ def create_info_alert(
 ) -> FT: # Div element containing the info alert
     "Create an info alert with optional details."
 ```
+
+### Error Utilities (`errors.ipynb`)
+
+> Utilities for converting structured errors to FastHTML responses,
+> alerts, and error pages
+
+#### Import
+
+``` python
+from cjm_fasthtml_app_core.core.errors import (
+    error_to_alert,
+    error_to_htmx_response,
+    create_error_page,
+    error_to_page
+)
+```
+
+#### Functions
+
+```` python
+def error_to_alert(
+    error: Any,  # Error object (BaseError from cjm-error-handling or standard Exception)
+    include_debug_info: bool = False  # Whether to include debug information in the alert
+) -> FT:  # Alert component (error or warning)
+    """
+    Convert an error to an alert component.
+    
+    - Uses user-friendly message for display
+    - Optionally includes debug information
+    - Maps severity to alert type (error/warning)
+    - Falls back to standard exception str() for non-structured errors
+    
+    Example:
+        ```python
+        try:
+            result = manager.load_plugin(plugin_meta)
+        except PluginError as e:
+            return error_to_alert(e)
+        ```
+    """
+````
+
+```` python
+def error_to_htmx_response(
+    error: Any,  # Error object (BaseError or Exception)
+    target_id: str = AppHtmlIds.ALERT_CONTAINER,  # ID of element to update with error
+    include_debug_info: bool = False  # Whether to include debug information
+) -> FT:  # Alert component with correct ID for HTMX targeting
+    """
+    Create an HTMX-compatible error response.
+    
+    Returns an alert that HTMX can swap into the target element.
+    
+    Example:
+        ```python
+        @app.post("/save-config")
+        async def save_config(request):
+            try:
+                config = await load_config()
+                return create_success_alert("Saved!")
+            except ConfigurationError as e:
+                return error_to_htmx_response(e)
+        ```
+    """
+````
+
+```` python
+def create_error_page(
+    title: str = "Error",  # Page title
+    message: str = "An error occurred",  # Main error message
+    details: Optional[str] = None,  # Optional details or debug info
+    show_home_link: bool = True,  # Whether to show a link back to home
+    home_path: str = "/"  # Path for the home link (defaults to root)
+) -> FT:  # Div element containing the full error page
+    """
+    Create a full-page error display.
+    
+    Useful for critical errors or standard HTTP error pages (404, 500, etc.).
+    
+    Example:
+        ```python
+        @app.get("/not-found")
+        def not_found():
+            return create_error_page(
+                title="Page Not Found",
+                message="The page you're looking for doesn't exist",
+                details="Error 404",
+                home_path="/dashboard"
+            )
+        ```
+    """
+````
+
+```` python
+def error_to_page(
+    error: Any,  # Error object (BaseError or Exception)
+    include_debug_info: bool = False,  # Whether to include debug information
+    show_home_link: bool = True,  # Whether to show a link back to home
+    home_path: str = "/"  # Path for the home link (defaults to root)
+) -> FT:  # Full error page component
+    """
+    Convert an error to a full-page error display.
+    
+    Useful for critical errors that need a dedicated page.
+    
+    Example:
+        ```python
+        try:
+            critical_operation()
+        except CriticalError as e:
+            return error_to_page(e, include_debug_info=True, home_path="/dashboard")
+        ```
+    """
+````
 
 ### HTML IDs (`html_ids.ipynb`)
 
