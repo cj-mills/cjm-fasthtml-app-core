@@ -1,0 +1,293 @@
+[
+  {
+    "objectID": "core/htmx.html",
+    "href": "core/htmx.html",
+    "title": "HTMX Utilities",
+    "section": "",
+    "text": "source\n\n\n\ndef is_htmx_request(\n    request, # FastHTML request object\n)-&gt;bool: # True if request is from HTMX\n\nCheck if a request is an HTMX request.\nHTMX requests include the ‘HX-Request’ header set to ‘true’. This is useful for conditionally returning partial HTML vs full pages.\n\n# Example: Check if request is from HTMX\nfrom types import SimpleNamespace\n\n# Mock HTMX request\nhtmx_request = SimpleNamespace(headers={'HX-Request': 'true'})\nprint(f\"Is HTMX request: {is_htmx_request(htmx_request)}\")\n\n# Mock normal request\nnormal_request = SimpleNamespace(headers={})\nprint(f\"Is HTMX request: {is_htmx_request(normal_request)}\")\n\nIs HTMX request: True\nIs HTMX request: False",
+    "crumbs": [
+      "core",
+      "HTMX Utilities"
+    ]
+  },
+  {
+    "objectID": "core/htmx.html#request-detection",
+    "href": "core/htmx.html#request-detection",
+    "title": "HTMX Utilities",
+    "section": "",
+    "text": "source\n\n\n\ndef is_htmx_request(\n    request, # FastHTML request object\n)-&gt;bool: # True if request is from HTMX\n\nCheck if a request is an HTMX request.\nHTMX requests include the ‘HX-Request’ header set to ‘true’. This is useful for conditionally returning partial HTML vs full pages.\n\n# Example: Check if request is from HTMX\nfrom types import SimpleNamespace\n\n# Mock HTMX request\nhtmx_request = SimpleNamespace(headers={'HX-Request': 'true'})\nprint(f\"Is HTMX request: {is_htmx_request(htmx_request)}\")\n\n# Mock normal request\nnormal_request = SimpleNamespace(headers={})\nprint(f\"Is HTMX request: {is_htmx_request(normal_request)}\")\n\nIs HTMX request: True\nIs HTMX request: False",
+    "crumbs": [
+      "core",
+      "HTMX Utilities"
+    ]
+  },
+  {
+    "objectID": "core/htmx.html#htmx-request-handler",
+    "href": "core/htmx.html#htmx-request-handler",
+    "title": "HTMX Utilities",
+    "section": "HTMX Request Handler",
+    "text": "HTMX Request Handler\n\nsource\n\nhandle_htmx_request\n\ndef handle_htmx_request(\n    request, # FastHTML request object\n    content_fn:Callable, # Function to generate content\n    args:VAR_POSITIONAL, # Positional arguments for content_fn\n    wrap_fn:Optional=None, # Optional wrapper function for full page requests\n    kwargs:VAR_KEYWORD\n):\n\nHandle HTMX vs full page response pattern.\nThis is a common pattern where HTMX requests return just the content, while full page requests wrap the content with page layout.\n\n# Example: Using handle_htmx_request\nfrom types import SimpleNamespace\nfrom fasthtml.common import Div, H1\n\ndef my_content():\n    return Div(H1(\"Dashboard Content\"))\n\ndef my_wrapper(content):\n    return Div(\n        H1(\"Site Header\"),\n        content,\n        Div(\"Footer\")\n    )\n\n# HTMX request - returns just content\nhtmx_request = SimpleNamespace(headers={'HX-Request': 'true'})\nresult = handle_htmx_request(htmx_request, my_content, wrap_fn=my_wrapper)\nprint(\"HTMX request result:\")\nprint(result)\n\n# Full page request - returns wrapped content\nnormal_request = SimpleNamespace(headers={})\nresult = handle_htmx_request(normal_request, my_content, wrap_fn=my_wrapper)\nprint(\"\\nFull page request result:\")\nprint(result)\n\nHTMX request result:\n&lt;div&gt;&lt;h1&gt;Dashboard Content&lt;/h1&gt;&lt;/div&gt;\n\nFull page request result:\n&lt;div&gt;&lt;h1&gt;Site Header&lt;/h1&gt;&lt;div&gt;&lt;h1&gt;Dashboard Content&lt;/h1&gt;&lt;/div&gt;&lt;div&gt;Footer&lt;/div&gt;&lt;/div&gt;",
+    "crumbs": [
+      "core",
+      "HTMX Utilities"
+    ]
+  },
+  {
+    "objectID": "core/errors.html",
+    "href": "core/errors.html",
+    "title": "Error Utilities",
+    "section": "",
+    "text": "Convert structured errors from the cjm-error-handling library into FastHTML alert components.\n\nsource\n\n\n\ndef error_to_alert(\n    error:Any, # Error object (BaseError from cjm-error-handling or standard Exception)\n    include_debug_info:bool=False, # Whether to include debug information in the alert\n)-&gt;FT: # Alert component (error or warning)\n\nConvert an error to an alert component.\n\n\n\n\n# Example 1: Standard exception\ntry:\n    raise ValueError(\"Invalid configuration value\")\nexcept ValueError as e:\n    alert_component = error_to_alert(e)\n    print(\"Standard exception alert created\")\n\n# Example 2: Structured error (if library available)\nif _has_error_handling:\n    try:\n        raise PluginError(\n            message=\"Failed to load plugin\",\n            debug_info=\"Plugin class not found in module\",\n            context=ErrorContext(operation=\"load_plugin\"),\n            plugin_id=\"test_plugin\"\n        )\n    except PluginError as e:\n        alert_component = error_to_alert(e, include_debug_info=True)\n        print(\"Structured error alert with debug info created\")\n\nStandard exception alert created\nStructured error alert with debug info created",
+    "crumbs": [
+      "core",
+      "Error Utilities"
+    ]
+  },
+  {
+    "objectID": "core/errors.html#error-to-alert-conversion",
+    "href": "core/errors.html#error-to-alert-conversion",
+    "title": "Error Utilities",
+    "section": "",
+    "text": "Convert structured errors from the cjm-error-handling library into FastHTML alert components.\n\nsource\n\n\n\ndef error_to_alert(\n    error:Any, # Error object (BaseError from cjm-error-handling or standard Exception)\n    include_debug_info:bool=False, # Whether to include debug information in the alert\n)-&gt;FT: # Alert component (error or warning)\n\nConvert an error to an alert component.\n\n\n\n\n# Example 1: Standard exception\ntry:\n    raise ValueError(\"Invalid configuration value\")\nexcept ValueError as e:\n    alert_component = error_to_alert(e)\n    print(\"Standard exception alert created\")\n\n# Example 2: Structured error (if library available)\nif _has_error_handling:\n    try:\n        raise PluginError(\n            message=\"Failed to load plugin\",\n            debug_info=\"Plugin class not found in module\",\n            context=ErrorContext(operation=\"load_plugin\"),\n            plugin_id=\"test_plugin\"\n        )\n    except PluginError as e:\n        alert_component = error_to_alert(e, include_debug_info=True)\n        print(\"Structured error alert with debug info created\")\n\nStandard exception alert created\nStructured error alert with debug info created",
+    "crumbs": [
+      "core",
+      "Error Utilities"
+    ]
+  },
+  {
+    "objectID": "core/errors.html#htmx-error-response-utilities",
+    "href": "core/errors.html#htmx-error-response-utilities",
+    "title": "Error Utilities",
+    "section": "HTMX Error Response Utilities",
+    "text": "HTMX Error Response Utilities\nCreate HTMX-compatible error responses that can update specific page elements.\n\nsource\n\nerror_to_htmx_response\n\ndef error_to_htmx_response(\n    error:Any, # Error object (BaseError or Exception)\n    target_id:str='alert-container', # ID of element to update with error\n    include_debug_info:bool=False, # Whether to include debug information\n)-&gt;FT: # Alert component with correct ID for HTMX targeting\n\nCreate an HTMX-compatible error response.\n\n# Example: HTMX error response\nif _has_error_handling:\n    error = ValidationError(\n        message=\"Invalid form data\",\n        debug_info=\"Field 'port' must be between 1-65535\",\n        context=ErrorContext(operation=\"validate_form\"),\n        validation_errors={\"port\": \"Out of range\"}\n    )\n    htmx_response = error_to_htmx_response(error)\n    print(\"HTMX error response created\")\n\nHTMX error response created",
+    "crumbs": [
+      "core",
+      "Error Utilities"
+    ]
+  },
+  {
+    "objectID": "core/errors.html#error-page-components",
+    "href": "core/errors.html#error-page-components",
+    "title": "Error Utilities",
+    "section": "Error Page Components",
+    "text": "Error Page Components\nFull-page error displays for critical failures or 404/500 errors.\n\nsource\n\ncreate_error_page\n\ndef create_error_page(\n    title:str='Error', # Page title\n    message:str='An error occurred', # Main error message\n    details:Optional=None, # Optional details or debug info\n    show_home_link:bool=True, # Whether to show a link back to home\n    home_path:str='/', # Path for the home link (defaults to root)\n)-&gt;FT: # Div element containing the full error page\n\nCreate a full-page error display.\n\n# Example: Create a 404 error page\ncreate_error_page(\n    title=\"Page Not Found\",\n    message=\"The page you're looking for doesn't exist\",\n    details=\"Error 404\"\n)\n\n&lt;div class=\"flex flex-col items-center justify-center text-center p-8 my-auto\"&gt;\n  &lt;div class=\"mb-6\"&gt;\n&lt;svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"none\" class=\"w-24 h-24 stroke-error\"&gt;&lt;path d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"&gt;&lt;/path&gt;&lt;/svg&gt;  &lt;/div&gt;\n  &lt;h1 class=\"text-3xl font-bold text-base-content mb-4\"&gt;Page Not Found&lt;/h1&gt;\n  &lt;p class=\"text-lg text-base-content/70 mb-2\"&gt;The page you're looking for doesn't exist&lt;/p&gt;\n  &lt;p class=\"text-sm text-base-content/50 mb-8\"&gt;Error 404&lt;/p&gt;\n&lt;a href=\"/\" class=\"btn btn-primary\"&gt;Go to Home&lt;/a&gt;&lt;/div&gt;\n\n\n\nsource\n\n\nerror_to_page\n\ndef error_to_page(\n    error:Any, # Error object (BaseError or Exception)\n    include_debug_info:bool=False, # Whether to include debug information\n    show_home_link:bool=True, # Whether to show a link back to home\n    home_path:str='/', # Path for the home link (defaults to root)\n)-&gt;FT: # Full error page component\n\nConvert an error to a full-page error display.\n\n# Example: Convert error to page\nif _has_error_handling:\n    error = WorkerError(\n        message=\"Worker process crashed\",\n        debug_info=\"Worker PID 12345 terminated unexpectedly\",\n        context=ErrorContext(operation=\"worker_monitor\", worker_pid=12345),\n        worker_type=\"transcription\",\n        severity=ErrorSeverity.CRITICAL\n    )\n    error_page = error_to_page(error, include_debug_info=True)\n    print(\"Error page created\")\n\nError page created",
+    "crumbs": [
+      "core",
+      "Error Utilities"
+    ]
+  },
+  {
+    "objectID": "core/routing.html",
+    "href": "core/routing.html",
+    "title": "routing",
+    "section": "",
+    "text": "Helper function to register multiple routers at once, reducing boilerplate.\n\nsource\n\n\n\ndef register_routes(\n    app, # FastHTML app instance\n    routers:VAR_POSITIONAL, # One or more APIRouter instances to register\n)-&gt;None: # No return value\n\nRegister multiple APIRouter instances to a FastHTML app at once.",
+    "crumbs": [
+      "core",
+      "routing"
+    ]
+  },
+  {
+    "objectID": "core/routing.html#route-registration-helper",
+    "href": "core/routing.html#route-registration-helper",
+    "title": "routing",
+    "section": "",
+    "text": "Helper function to register multiple routers at once, reducing boilerplate.\n\nsource\n\n\n\ndef register_routes(\n    app, # FastHTML app instance\n    routers:VAR_POSITIONAL, # One or more APIRouter instances to register\n)-&gt;None: # No return value\n\nRegister multiple APIRouter instances to a FastHTML app at once.",
+    "crumbs": [
+      "core",
+      "routing"
+    ]
+  },
+  {
+    "objectID": "core/routing.html#example-usage",
+    "href": "core/routing.html#example-usage",
+    "title": "routing",
+    "section": "Example Usage",
+    "text": "Example Usage\n\n# Mock FastHTML app and routers for testing\nclass MockRouter:\n    def __init__(self, prefix):\n        self.prefix = prefix\n        self.registered = False\n    \n    def to_app(self, app):\n        self.registered = True\n        app.routers.append(self)\n\nclass MockApp:\n    def __init__(self):\n        self.routers = []\n\n# Create mock app and routers\napp = MockApp()\nmain_router = MockRouter(\"/\")\nsettings_router = MockRouter(\"/settings\")\napi_router = MockRouter(\"/api\")\n\n# Register all at once\nregister_routes(app, main_router, settings_router, api_router)\n\n# Verify all registered\nprint(f\"Number of routers registered: {len(app.routers)}\")\nfor router in app.routers:\n    print(f\"  - {router.prefix}: registered={router.registered}\")\n\nNumber of routers registered: 3\n  - /: registered=True\n  - /settings: registered=True\n  - /api: registered=True",
+    "crumbs": [
+      "core",
+      "routing"
+    ]
+  },
+  {
+    "objectID": "core/routing.html#benefits",
+    "href": "core/routing.html#benefits",
+    "title": "routing",
+    "section": "Benefits",
+    "text": "Benefits\nThis simple helper provides:\n\nReduced boilerplate: One line instead of N lines for N routers\nClear intent: Explicitly shows “these are all the routes for this app”\nEasier maintenance: Add/remove routers in one place\nLess error-prone: Can’t accidentally forget to register a router",
+    "crumbs": [
+      "core",
+      "routing"
+    ]
+  },
+  {
+    "objectID": "components/navbar.html",
+    "href": "components/navbar.html",
+    "title": "Navbar",
+    "section": "",
+    "text": "source\n\n\n\ndef create_nav_link(\n    label:str, # Link text to display\n    route, # FastHTML route object with .to() method\n    target_id:str='main-content', # HTMX target container ID\n)-&gt;FT: # Anchor element with HTMX attributes\n\nCreate a navigation link with HTMX attributes for SPA-like behavior.\nCreates an anchor element that uses HTMX to load content without full page reload.\n\n# Example: Create a navigation link\nfrom types import SimpleNamespace\n\n# Mock route object\nmock_route = SimpleNamespace(to=lambda: \"/about\")\n\nlink = create_nav_link(\"About Us\", mock_route)\nprint(\"Navigation link:\")\nprint(link)\n\nNavigation link:\n&lt;a href=\"/about\" hx-get=\"/about\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;About Us&lt;/a&gt;",
+    "crumbs": [
+      "components",
+      "Navbar"
+    ]
+  },
+  {
+    "objectID": "components/navbar.html#navigation-link",
+    "href": "components/navbar.html#navigation-link",
+    "title": "Navbar",
+    "section": "",
+    "text": "source\n\n\n\ndef create_nav_link(\n    label:str, # Link text to display\n    route, # FastHTML route object with .to() method\n    target_id:str='main-content', # HTMX target container ID\n)-&gt;FT: # Anchor element with HTMX attributes\n\nCreate a navigation link with HTMX attributes for SPA-like behavior.\nCreates an anchor element that uses HTMX to load content without full page reload.\n\n# Example: Create a navigation link\nfrom types import SimpleNamespace\n\n# Mock route object\nmock_route = SimpleNamespace(to=lambda: \"/about\")\n\nlink = create_nav_link(\"About Us\", mock_route)\nprint(\"Navigation link:\")\nprint(link)\n\nNavigation link:\n&lt;a href=\"/about\" hx-get=\"/about\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;About Us&lt;/a&gt;",
+    "crumbs": [
+      "components",
+      "Navbar"
+    ]
+  },
+  {
+    "objectID": "components/navbar.html#navbar-component",
+    "href": "components/navbar.html#navbar-component",
+    "title": "Navbar",
+    "section": "Navbar Component",
+    "text": "Navbar Component\n\nsource\n\ncreate_navbar\n\ndef create_navbar(\n    title:str, # Application title\n    nav_items:List, # List of (label, route) tuples\n    home_route:Optional=None, # Optional home route for title link\n    theme_selector:bool=True, # Whether to include theme selector\n    target_id:str='main-content', # HTMX target container ID\n    navbar_kwargs:VAR_KEYWORD\n)-&gt;FT: # Navbar component\n\nCreate a responsive navigation bar with mobile dropdown menu.\nCreates a DaisyUI navbar with: - Responsive design (mobile dropdown, desktop horizontal menu) - Optional theme selector - HTMX-enabled navigation links - Clickable title that links to home\n\n# Example: Create a basic navbar\nfrom types import SimpleNamespace\n\n# Mock routes\nhome = SimpleNamespace(to=lambda: \"/\")\nabout = SimpleNamespace(to=lambda: \"/about\")\nsettings = SimpleNamespace(to=lambda: \"/settings\")\n\nnavbar = create_navbar(\n    title=\"My FastHTML App\",\n    nav_items=[\n        (\"Home\", home),\n        (\"About\", about),\n        (\"Settings\", settings)\n    ],\n    theme_selector=False  # Disable for this example\n)\n\nprint(\"Navbar component:\")\nprint(navbar)\n\nNavbar component:\n&lt;div&gt;&lt;div class=\"navbar bg-base-100 shadow-sm p-4\"&gt;&lt;div class=\"navbar-start gap-2\"&gt;&lt;div class=\"dropdown lg:hidden\"&gt;&lt;div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost btn-square\"&gt;&lt;svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"none\" class=\"h-5 w-5 stroke-base-content\"&gt;&lt;path d=\"M4 6h16M4 12h8m-8 6h16\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/div&gt;&lt;ul tabindex=\"0\" class=\"menu dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow-lg\"&gt;&lt;li&gt;&lt;a href=\"/\" hx-get=\"/\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;Home&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=\"/about\" hx-get=\"/about\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;About&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=\"/settings\" hx-get=\"/settings\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;Settings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;a href=\"/\" hx-get=\"/\" hx-push-url=\"/\" hx-target=\"#main-content\" class=\"btn btn-ghost p-0 max-w-full\"&gt;&lt;h1 class=\"text-xl md:text-2xl font-bold text-base-content text-wrap max-w-full\"&gt;My FastHTML App&lt;/h1&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class=\"navbar-center hidden lg:flex\"&gt;&lt;ul class=\"menu menu-horizontal px-1\"&gt;&lt;li&gt;&lt;a href=\"/\" hx-get=\"/\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;Home&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=\"/about\" hx-get=\"/about\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;About&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=\"/settings\" hx-get=\"/settings\" hx-push-url=\"true\" hx-target=\"#main-content\"&gt;Settings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;",
+    "crumbs": [
+      "components",
+      "Navbar"
+    ]
+  },
+  {
+    "objectID": "components/alerts.html#success-alert",
+    "href": "components/alerts.html#success-alert",
+    "title": "Alerts",
+    "section": "Success Alert",
+    "text": "Success Alert\n\nsource\n\ncreate_success_alert\n\ndef create_success_alert(\n    message:str, # The success message to display\n    timeout_ms:int=3000, # Time in milliseconds before auto-dismiss\n)-&gt;FT: # Div element containing the success alert\n\nCreate a success alert that auto-dismisses.\n\n# Example: Create a success alert\ncreate_success_alert(\"Configuration saved successfully!\")\n\n&lt;div id=\"alert-container\"&gt;\n  &lt;div class=\"alert alert-success shadow-md mb-4\"&gt;\n&lt;svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"none\" class=\"w-6 h-6 stroke-success-content\"&gt;&lt;path d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"&gt;&lt;/path&gt;&lt;/svg&gt;&lt;span&gt;Configuration saved successfully!&lt;/span&gt;  &lt;/div&gt;\n&lt;script&gt;\n        // Clear any existing timeout\n        if (window.alertTimeout) {\n            clearTimeout(window.alertTimeout);\n            clearTimeout(window.alertFadeTimeout);\n        }\n\n        // Remove any existing alert immediately\n        var existingAlert = document.getElementById('alert-container');\n        if (existingAlert && existingAlert !== document.currentScript.parentElement) {\n            existingAlert.remove();\n        }\n\n        // Set new timeout for this alert\n        window.alertTimeout = setTimeout(function() {\n            var alertEl = document.getElementById('alert-container');\n            if (alertEl) {\n                alertEl.style.transition = 'opacity 0.5s';\n                alertEl.style.opacity = '0';\n                window.alertFadeTimeout = setTimeout(function() {\n                    if (alertEl) {\n                        alertEl.remove();\n                    }\n                }, 500);\n            }\n        }, 3000);\n    &lt;/script&gt;&lt;/div&gt;",
+    "crumbs": [
+      "components",
+      "Alerts"
+    ]
+  },
+  {
+    "objectID": "components/alerts.html#error-alert",
+    "href": "components/alerts.html#error-alert",
+    "title": "Alerts",
+    "section": "Error Alert",
+    "text": "Error Alert\n\nsource\n\ncreate_error_alert\n\ndef create_error_alert(\n    message:str, # The error message to display\n    details:Optional=None, # Optional additional details text\n)-&gt;FT: # Div element containing the error alert\n\nCreate an error alert with optional details.\n\n# Example: Create an error alert\ncreate_error_alert(\"Failed to save configuration\", \"Invalid port number\")\n\n&lt;div id=\"alert-container\"&gt;\n  &lt;div class=\"alert alert-error shadow-md mb-4\"&gt;\n&lt;svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"none\" class=\"w-6 h-6 stroke-error-content\"&gt;&lt;path d=\"M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"&gt;&lt;/path&gt;&lt;/svg&gt;&lt;span&gt;Failed to save configuration&lt;/span&gt;&lt;span class=\"text-sm text-base-content/60\"&gt;Invalid port number&lt;/span&gt;  &lt;/div&gt;\n&lt;/div&gt;",
+    "crumbs": [
+      "components",
+      "Alerts"
+    ]
+  },
+  {
+    "objectID": "components/alerts.html#warning-alert",
+    "href": "components/alerts.html#warning-alert",
+    "title": "Alerts",
+    "section": "Warning Alert",
+    "text": "Warning Alert\n\nsource\n\ncreate_warning_alert\n\ndef create_warning_alert(\n    message:str, # The warning message to display\n    details:Optional=None, # Optional additional details text\n)-&gt;functools.partial(&lt;function ft_hx at 0x7f8cf0dc5940&gt;, 'div'): # Div element containing the warning alert\n\nCreate a warning alert with optional details.\n\n# Example: Create a warning alert\ncreate_warning_alert(\"Configuration incomplete\", \"Some optional fields are empty\")\n\n&lt;div id=\"alert-container\"&gt;\n  &lt;div class=\"alert alert-warning shadow-md mb-4\"&gt;\n&lt;svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"none\" class=\"w-6 h-6 stroke-warning-content\"&gt;&lt;path d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"&gt;&lt;/path&gt;&lt;/svg&gt;&lt;span&gt;Configuration incomplete&lt;/span&gt;&lt;span class=\"text-sm text-base-content/60\"&gt;Some optional fields are empty&lt;/span&gt;  &lt;/div&gt;\n&lt;/div&gt;",
+    "crumbs": [
+      "components",
+      "Alerts"
+    ]
+  },
+  {
+    "objectID": "components/alerts.html#info-alert",
+    "href": "components/alerts.html#info-alert",
+    "title": "Alerts",
+    "section": "Info Alert",
+    "text": "Info Alert\n\nsource\n\ncreate_info_alert\n\ndef create_info_alert(\n    message:str, # The info message to display\n    details:Optional=None, # Optional additional details text\n)-&gt;FT: # Div element containing the info alert\n\nCreate an info alert with optional details.\n\n# Example: Create an info alert\ncreate_info_alert(\"New feature available\", \"Check out the updated settings page\")\n\n&lt;div id=\"alert-container\"&gt;\n  &lt;div class=\"alert alert-info shadow-md mb-4\"&gt;\n&lt;svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\" fill=\"none\" class=\"w-6 h-6 stroke-info-content\"&gt;&lt;path d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"&gt;&lt;/path&gt;&lt;/svg&gt;&lt;span&gt;New feature available&lt;/span&gt;&lt;span class=\"text-sm text-base-content/60\"&gt;Check out the updated settings page&lt;/span&gt;  &lt;/div&gt;\n&lt;/div&gt;",
+    "crumbs": [
+      "components",
+      "Alerts"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "cjm-fasthtml-app-core",
+    "section": "",
+    "text": "pip install cjm_fasthtml_app_core",
+    "crumbs": [
+      "cjm-fasthtml-app-core"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "cjm-fasthtml-app-core",
+    "section": "",
+    "text": "pip install cjm_fasthtml_app_core",
+    "crumbs": [
+      "cjm-fasthtml-app-core"
+    ]
+  },
+  {
+    "objectID": "index.html#project-structure",
+    "href": "index.html#project-structure",
+    "title": "cjm-fasthtml-app-core",
+    "section": "Project Structure",
+    "text": "Project Structure\nnbs/\n├── components/ (2)\n│   ├── alerts.ipynb  # Alert components for displaying success, error, warning, and info messages\n│   └── navbar.ipynb  # Responsive navigation bar components with mobile support\n└── core/ (5)\n    ├── errors.ipynb    # Utilities for converting structured errors to FastHTML responses, alerts, and error pages\n    ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications\n    ├── htmx.ipynb      # Utilities for handling HTMX requests and responses\n    ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure\n    └── routing.ipynb   # Routing utilities for FastHTML applications\nTotal: 7 notebooks across 2 directories",
+    "crumbs": [
+      "cjm-fasthtml-app-core"
+    ]
+  },
+  {
+    "objectID": "index.html#module-dependencies",
+    "href": "index.html#module-dependencies",
+    "title": "cjm-fasthtml-app-core",
+    "section": "Module Dependencies",
+    "text": "Module Dependencies\ngraph LR\n    components_alerts[components.alerts&lt;br/&gt;Alerts]\n    components_navbar[components.navbar&lt;br/&gt;Navbar]\n    core_errors[core.errors&lt;br/&gt;Error Utilities]\n    core_html_ids[core.html_ids&lt;br/&gt;HTML IDs]\n    core_htmx[core.htmx&lt;br/&gt;HTMX Utilities]\n    core_layout[core.layout&lt;br/&gt;Layout]\n    core_routing[core.routing&lt;br/&gt;routing]\n\n    components_alerts --&gt; core_html_ids\n    components_navbar --&gt; core_html_ids\n    core_errors --&gt; components_alerts\n    core_errors --&gt; core_html_ids\n    core_layout --&gt; core_html_ids\n5 cross-module dependencies detected",
+    "crumbs": [
+      "cjm-fasthtml-app-core"
+    ]
+  },
+  {
+    "objectID": "index.html#cli-reference",
+    "href": "index.html#cli-reference",
+    "title": "cjm-fasthtml-app-core",
+    "section": "CLI Reference",
+    "text": "CLI Reference\nNo CLI commands found in this project.",
+    "crumbs": [
+      "cjm-fasthtml-app-core"
+    ]
+  },
+  {
+    "objectID": "index.html#module-overview",
+    "href": "index.html#module-overview",
+    "title": "cjm-fasthtml-app-core",
+    "section": "Module Overview",
+    "text": "Module Overview\nDetailed documentation for each module in the project:\n\nAlerts (alerts.ipynb)\n\nAlert components for displaying success, error, warning, and info messages\n\n\nImport\nfrom cjm_fasthtml_app_core.components.alerts import (\n    create_success_alert,\n    create_error_alert,\n    create_warning_alert,\n    create_info_alert\n)\n\n\nFunctions\ndef _create_auto_dismiss_script(\n    timeout_ms:int=3000 # Time in milliseconds before auto-dismiss\n) -&gt; FT: # Script element for auto-dismissing alerts\n    \"Create a script that auto-dismisses the alert after a timeout.\"\ndef create_success_alert(\n    message:str, # The success message to display\n    timeout_ms:int=3000 # Time in milliseconds before auto-dismiss\n) -&gt; FT: # Div element containing the success alert\n    \"Create a success alert that auto-dismisses.\"\ndef create_error_alert(\n    message:str, # The error message to display\n    details:Optional[str]=None # Optional additional details text\n) -&gt; FT: # Div element containing the error alert\n    \"Create an error alert with optional details.\"\ndef create_warning_alert(\n    message: str,  # The warning message to display\n    details: Optional[str] = None  # Optional additional details text\n) -&gt; Div:  # Div element containing the warning alert\n    \"Create a warning alert with optional details.\"\ndef create_info_alert(\n    message:str, # The info message to display\n    details:Optional[str]=None # Optional additional details text\n) -&gt; FT: # Div element containing the info alert\n    \"Create an info alert with optional details.\"\n\n\n\nError Utilities (errors.ipynb)\n\nUtilities for converting structured errors to FastHTML responses, alerts, and error pages\n\n\nImport\nfrom cjm_fasthtml_app_core.core.errors import (\n    error_to_alert,\n    error_to_htmx_response,\n    create_error_page,\n    error_to_page\n)\n\n\nFunctions\ndef error_to_alert(\n    error: Any,  # Error object (BaseError from cjm-error-handling or standard Exception)\n    include_debug_info: bool = False  # Whether to include debug information in the alert\n) -&gt; FT:  # Alert component (error or warning)\n    \"Convert an error to an alert component.\"\ndef error_to_htmx_response(\n    error: Any,  # Error object (BaseError or Exception)\n    target_id: str = AppHtmlIds.ALERT_CONTAINER,  # ID of element to update with error\n    include_debug_info: bool = False  # Whether to include debug information\n) -&gt; FT:  # Alert component with correct ID for HTMX targeting\n    \"Create an HTMX-compatible error response.\"\ndef create_error_page(\n    title: str = \"Error\",  # Page title\n    message: str = \"An error occurred\",  # Main error message\n    details: Optional[str] = None,  # Optional details or debug info\n    show_home_link: bool = True,  # Whether to show a link back to home\n    home_path: str = \"/\"  # Path for the home link (defaults to root)\n) -&gt; FT:  # Div element containing the full error page\n    \"Create a full-page error display.\"\ndef error_to_page(\n    error: Any,  # Error object (BaseError or Exception)\n    include_debug_info: bool = False,  # Whether to include debug information\n    show_home_link: bool = True,  # Whether to show a link back to home\n    home_path: str = \"/\"  # Path for the home link (defaults to root)\n) -&gt; FT:  # Full error page component\n    \"Convert an error to a full-page error display.\"\n\n\n\nHTML IDs (html_ids.ipynb)\n\nBase HTML ID constants for FastHTML applications\n\n\nImport\nfrom cjm_fasthtml_app_core.core.html_ids import (\n    AppHtmlIds\n)\n\n\nClasses\nclass AppHtmlIds:\n    \"Base HTML ID constants for FastHTML applications.\"\n    \n    def as_selector(\n            id_str:str # The HTML ID to convert\n        ) -&gt; str: # CSS selector with # prefix\n        \"Convert an ID to a CSS selector format.\"\n\n\n\nHTMX Utilities (htmx.ipynb)\n\nUtilities for handling HTMX requests and responses\n\n\nImport\nfrom cjm_fasthtml_app_core.core.htmx import (\n    is_htmx_request,\n    handle_htmx_request\n)\n\n\nFunctions\ndef is_htmx_request(\n    request # FastHTML request object\n) -&gt; bool: # True if request is from HTMX\n    \"Check if a request is an HTMX request.\"\ndef handle_htmx_request(\n    request, # FastHTML request object\n    content_fn:Callable, # Function to generate content\n    *args, # Positional arguments for content_fn\n    wrap_fn:Optional[Callable]=None, # Optional wrapper function for full page requests\n    **kwargs # Keyword arguments for content_fn\n): # Content or wrapped content based on request type\n    \"Handle HTMX vs full page response pattern.\"\n\n\n\nLayout (layout.ipynb)\n\nPage layout utilities for wrapping content with common page structure\n\n\nImport\nfrom cjm_fasthtml_app_core.core.layout import (\n    wrap_with_layout\n)\n\n\nFunctions\ndef wrap_with_layout(\n    content:FT, # The main content to display\n    navbar:Optional[FT]=None, # Optional navbar component\n    footer:Optional[FT]=None, # Optional footer component\n    container_id:str=AppHtmlIds.MAIN_CONTENT, # ID for the main content container\n    container_tag:str=\"div\" # HTML tag for the container\n) -&gt; FT: # Main element with navbar and content\n    \"Wrap content with the full page layout including optional navbar and footer.\"\n\n\n\nNavbar (navbar.ipynb)\n\nResponsive navigation bar components with mobile support\n\n\nImport\nfrom cjm_fasthtml_app_core.components.navbar import (\n    create_nav_link,\n    create_navbar\n)\n\n\nFunctions\ndef create_nav_link(\n    label:str, # Link text to display\n    route, # FastHTML route object with .to() method\n    target_id:str=AppHtmlIds.MAIN_CONTENT # HTMX target container ID\n) -&gt; FT: # Anchor element with HTMX attributes\n    \"Create a navigation link with HTMX attributes for SPA-like behavior.\"\ndef create_navbar(\n    title:str, # Application title\n    nav_items:List[Tuple[str, Any]], # List of (label, route) tuples\n    home_route:Optional[Any]=None, # Optional home route for title link\n    theme_selector:bool=True, # Whether to include theme selector\n    target_id:str=AppHtmlIds.MAIN_CONTENT, # HTMX target container ID\n    **navbar_kwargs # Additional kwargs for navbar styling\n) -&gt; FT: # Navbar component\n    \"Create a responsive navigation bar with mobile dropdown menu.\"\n\n\n\nrouting (routing.ipynb)\n\nRouting utilities for FastHTML applications\n\n\nImport\nfrom cjm_fasthtml_app_core.core.routing import (\n    register_routes\n)\n\n\nFunctions\ndef register_routes(\n    app,  # FastHTML app instance\n    *routers  # One or more APIRouter instances to register\n) -&gt; None:  # No return value\n    \"Register multiple APIRouter instances to a FastHTML app at once.\"",
+    "crumbs": [
+      "cjm-fasthtml-app-core"
+    ]
+  },
+  {
+    "objectID": "core/layout.html",
+    "href": "core/layout.html",
+    "title": "Layout",
+    "section": "",
+    "text": "source\n\n\n\ndef wrap_with_layout(\n    content:FT, # The main content to display\n    navbar:Optional=None, # Optional navbar component\n    footer:Optional=None, # Optional footer component\n    container_id:str='main-content', # ID for the main content container\n    container_tag:str='div', # HTML tag for the container\n)-&gt;FT: # Main element with navbar and content\n\nWrap content with the full page layout including optional navbar and footer.\nThis utility provides a consistent page structure across your application. It wraps your content with optional navbar and footer components.\n\n# Example: Simple layout with just content\nfrom fasthtml.common import Div, H1, P\n\ncontent = Div(\n    H1(\"Page Title\"),\n    P(\"This is the main content\")\n)\n\npage = wrap_with_layout(content)\nprint(\"Layout with just content:\")\nprint(page)\n\nLayout with just content:\n&lt;main&gt;&lt;div id=\"main-content\"&gt;&lt;div&gt;&lt;h1&gt;Page Title&lt;/h1&gt;&lt;p&gt;This is the main content&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/main&gt;\n\n\n\n# Example: Layout with navbar and footer\nnavbar = Div(H1(\"My App\"), id=\"navbar\")\ncontent = Div(H1(\"Dashboard\"), P(\"Welcome to the dashboard\"))\nfooter = Div(P(\"© 2025 My Company\"), id=\"footer\")\n\npage = wrap_with_layout(content, navbar=navbar, footer=footer)\nprint(\"\\nLayout with navbar and footer:\")\nprint(page)\n\n\nLayout with navbar and footer:\n&lt;main&gt;&lt;div id=\"navbar\"&gt;&lt;h1&gt;My App&lt;/h1&gt;&lt;/div&gt;&lt;div id=\"main-content\"&gt;&lt;div&gt;&lt;h1&gt;Dashboard&lt;/h1&gt;&lt;p&gt;Welcome to the dashboard&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div id=\"footer\"&gt;&lt;p&gt;© 2025 My Company&lt;/p&gt;&lt;/div&gt;&lt;/main&gt;\n\n\n\n# Example: Using different container tag\ncontent = Div(H1(\"Article Title\"), P(\"Article content...\"))\n\npage = wrap_with_layout(content, container_tag=\"article\")\nprint(\"\\nLayout with article tag:\")\nprint(page)\n\n\nLayout with article tag:\n&lt;main&gt;&lt;article id=\"main-content\"&gt;&lt;div&gt;&lt;h1&gt;Article Title&lt;/h1&gt;&lt;p&gt;Article content...&lt;/p&gt;&lt;/div&gt;&lt;/article&gt;&lt;/main&gt;",
+    "crumbs": [
+      "core",
+      "Layout"
+    ]
+  },
+  {
+    "objectID": "core/layout.html#page-layout-wrapper",
+    "href": "core/layout.html#page-layout-wrapper",
+    "title": "Layout",
+    "section": "",
+    "text": "source\n\n\n\ndef wrap_with_layout(\n    content:FT, # The main content to display\n    navbar:Optional=None, # Optional navbar component\n    footer:Optional=None, # Optional footer component\n    container_id:str='main-content', # ID for the main content container\n    container_tag:str='div', # HTML tag for the container\n)-&gt;FT: # Main element with navbar and content\n\nWrap content with the full page layout including optional navbar and footer.\nThis utility provides a consistent page structure across your application. It wraps your content with optional navbar and footer components.\n\n# Example: Simple layout with just content\nfrom fasthtml.common import Div, H1, P\n\ncontent = Div(\n    H1(\"Page Title\"),\n    P(\"This is the main content\")\n)\n\npage = wrap_with_layout(content)\nprint(\"Layout with just content:\")\nprint(page)\n\nLayout with just content:\n&lt;main&gt;&lt;div id=\"main-content\"&gt;&lt;div&gt;&lt;h1&gt;Page Title&lt;/h1&gt;&lt;p&gt;This is the main content&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/main&gt;\n\n\n\n# Example: Layout with navbar and footer\nnavbar = Div(H1(\"My App\"), id=\"navbar\")\ncontent = Div(H1(\"Dashboard\"), P(\"Welcome to the dashboard\"))\nfooter = Div(P(\"© 2025 My Company\"), id=\"footer\")\n\npage = wrap_with_layout(content, navbar=navbar, footer=footer)\nprint(\"\\nLayout with navbar and footer:\")\nprint(page)\n\n\nLayout with navbar and footer:\n&lt;main&gt;&lt;div id=\"navbar\"&gt;&lt;h1&gt;My App&lt;/h1&gt;&lt;/div&gt;&lt;div id=\"main-content\"&gt;&lt;div&gt;&lt;h1&gt;Dashboard&lt;/h1&gt;&lt;p&gt;Welcome to the dashboard&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div id=\"footer\"&gt;&lt;p&gt;© 2025 My Company&lt;/p&gt;&lt;/div&gt;&lt;/main&gt;\n\n\n\n# Example: Using different container tag\ncontent = Div(H1(\"Article Title\"), P(\"Article content...\"))\n\npage = wrap_with_layout(content, container_tag=\"article\")\nprint(\"\\nLayout with article tag:\")\nprint(page)\n\n\nLayout with article tag:\n&lt;main&gt;&lt;article id=\"main-content\"&gt;&lt;div&gt;&lt;h1&gt;Article Title&lt;/h1&gt;&lt;p&gt;Article content...&lt;/p&gt;&lt;/div&gt;&lt;/article&gt;&lt;/main&gt;",
+    "crumbs": [
+      "core",
+      "Layout"
+    ]
+  },
+  {
+    "objectID": "core/html_ids.html",
+    "href": "core/html_ids.html",
+    "title": "HTML IDs",
+    "section": "",
+    "text": "source\n\nAppHtmlIds\n\ndef AppHtmlIds(\n    args:VAR_POSITIONAL, kwargs:VAR_KEYWORD\n):\n\nBase HTML ID constants for FastHTML applications.\nThis class provides centralized HTML ID constants that are commonly used across FastHTML applications. All IDs are defined as class attributes for IDE autocomplete and type checking.\nFor IDE Support:\nIDEs like VS Code with Pylance will autocomplete these attributes and warn if you try to access non-existent attributes. To add app-specific IDs, extend this class:\nclass MyAppHtmlIds(AppHtmlIds):\n    CUSTOM_SECTION = \"custom-section\"\n    SIDEBAR = \"sidebar\"\nNote: The typing.Final annotation indicates these are constants that shouldn’t be reassigned at runtime.\n\n# Example usage\nprint(f\"Main content ID: {AppHtmlIds.MAIN_CONTENT}\")\nprint(f\"As selector: {AppHtmlIds.as_selector(AppHtmlIds.MAIN_CONTENT)}\")\n\nMain content ID: main-content\nAs selector: #main-content\n\n\n\n# Example: Extending AppHtmlIds for app-specific IDs\nclass MyAppHtmlIds(AppHtmlIds):\n    \"\"\"Extended HTML IDs for my application.\"\"\"\n    SIDEBAR = \"sidebar\"\n    FOOTER = \"footer\"\n    NAVBAR = \"navbar\"\n\n# IDE will autocomplete these and warn about typos\nprint(f\"Sidebar ID: {MyAppHtmlIds.SIDEBAR}\")\nprint(f\"As selector: {MyAppHtmlIds.as_selector(MyAppHtmlIds.SIDEBAR)}\")\nprint(f\"Main content still available: {MyAppHtmlIds.MAIN_CONTENT}\")\n\n# This would cause an IDE warning (if you uncomment it):\n# print(MyAppHtmlIds.NONEXISTENT)  # ← IDE shows: \"NONEXISTENT\" is not a known attribute\n\nSidebar ID: sidebar\nAs selector: #sidebar\nMain content still available: main-content",
+    "crumbs": [
+      "core",
+      "HTML IDs"
+    ]
+  }
+]
