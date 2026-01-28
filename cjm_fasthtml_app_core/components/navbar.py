@@ -91,7 +91,6 @@ def create_navbar(
         navbar,
         bg_dui.base_100,
         shadow.sm,
-        m.b(6),
         p(4)
     )
     
