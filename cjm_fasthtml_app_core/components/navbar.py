@@ -78,7 +78,6 @@ def create_navbar(
             dropdown_content,
             bg_dui.base_100,
             border_radius.box,
-            z._1,
             m.t._3,
             w._52,
             p._2,
