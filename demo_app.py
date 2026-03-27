@@ -40,6 +40,8 @@ from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colo
 print("✓ All library components imported successfully")
 
 # Create the FastHTML app at module level
+APP_ID = "appcore"
+
 app, rt = fast_app(
     pico=False,
     hdrs=[
@@ -47,7 +49,9 @@ app, rt = fast_app(
         create_theme_persistence_script(),
     ],
     title="FastHTML App Core Demo",
-    htmlkw={'data-theme': 'light'}
+    htmlkw={'data-theme': 'light'},
+    session_cookie=f'session_{APP_ID}_',
+    secret_key=f'{APP_ID}-demo-secret',
 )
 
 # Define routes at module level
