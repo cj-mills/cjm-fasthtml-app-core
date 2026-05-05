@@ -12,9 +12,10 @@ pip install cjm_fasthtml_app_core
 ## Project Structure
 
     nbs/
-    ├── components/ (2)
-    │   ├── alerts.ipynb  # Alert components for displaying success, error, warning, and info messages
-    │   └── navbar.ipynb  # Responsive navigation bar components with mobile support
+    ├── components/ (3)
+    │   ├── alerts.ipynb         # Alert components for displaying success, error, warning, and info messages
+    │   ├── confirm_modal.ipynb  # Generic destructive-confirm modal &mdash; Cancel-on-left, Confirm-on-right, with backdrop click-to-dismiss and defensive form-submission guards. Codifies **Convention V12 (Destructive-confirm composition)** as running code.
+    │   └── navbar.ipynb         # Responsive navigation bar components with mobile support
     └── core/ (5)
         ├── errors.ipynb    # Utilities for converting structured errors to FastHTML responses, alerts, and error pages
         ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications
@@ -22,13 +23,14 @@ pip install cjm_fasthtml_app_core
         ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure
         └── routing.ipynb   # Routing utilities for FastHTML applications
 
-Total: 7 notebooks across 2 directories
+Total: 8 notebooks across 2 directories
 
 ## Module Dependencies
 
 ``` mermaid
 graph LR
     components_alerts[components.alerts<br/>Alerts]
+    components_confirm_modal[components.confirm_modal<br/>Confirm Modal]
     components_navbar[components.navbar<br/>Navbar]
     core_errors[core.errors<br/>Error Utilities]
     core_html_ids[core.html_ids<br/>HTML IDs]
@@ -108,6 +110,36 @@ def create_info_alert(
     details:Optional[str]=None # Optional additional details text
 ) -> FT: # Div element containing the info alert
     "Create an info alert with optional details."
+```
+
+### Confirm Modal (`confirm_modal.ipynb`)
+
+> Generic destructive-confirm modal — Cancel-on-left, Confirm-on-right,
+> with backdrop click-to-dismiss and defensive form-submission guards.
+> Codifies **Convention V12 (Destructive-confirm composition)** as
+> running code.
+
+#### Import
+
+``` python
+from cjm_fasthtml_app_core.components.confirm_modal import (
+    render_confirm_modal
+)
+```
+
+#### Functions
+
+``` python
+def render_confirm_modal(
+    modal_id:str, # HTML id for the <dialog> element
+    body_id:str, # HTML id for the inner Div HTMX targets for message text
+    title:str="Confirm Action?", # Modal title (rendered in <h3>)
+    confirm_label:str="Confirm", # Right-button label
+    confirm_icon:Optional[str]=None, # Optional Lucide icon name (e.g. "trash-2") prefixed to the confirm label
+    cancel_label:str="Cancel", # Left-button label
+    confirm_attrs:Optional[Dict[str, Any]]=None, # Caller-supplied attrs for the confirm button (hx_post / hx_vals / hx_swap / etc.)
+) -> FT: # Dialog element implementing V12
+    "Render a destructive-confirm modal (V12). Cancel-LEFT, Confirm-RIGHT, backdrop click-to-dismiss, defensive type=button. Body populated via HTMX swap into body_id."
 ```
 
 ### Error Utilities (`errors.ipynb`)
