@@ -5,14 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cjm-fasthtml-app-core"
 dynamic = ["version"]
-description = "Core utilities and reusable patterns for FastHTML applications including page layouts, HTMX request handling, alerts, and navbar components."
+description = "Core utilities and reusable patterns for FastHTML applications including page layouts, HTMX request handling, navbar, and confirm modal components."
 readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "Apache-2.0"}
 authors = [{name = "Christian J. Mills", email = "9126128+cj-mills@users.noreply.github.com"}]
 keywords = ['nbdev', 'jupyter', 'notebook', 'python']
 classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
-dependencies = ['cjm_fasthtml_daisyui', 'cjm_error_handling', 'cjm_fasthtml_design_system', 'cjm_fasthtml_lucide_icons']
+dependencies = ['cjm_fasthtml_daisyui', 'cjm_fasthtml_design_system', 'cjm_fasthtml_lucide_icons']
 
 [project.urls]
 Repository = "https://github.com/cj-mills/cjm-fasthtml-app-core"

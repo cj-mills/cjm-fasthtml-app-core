@@ -13,7 +13,6 @@ class AppHtmlIds:
 
     # Main content containers
     MAIN_CONTENT: Final[str] = "main-content"
-    ALERT_CONTAINER: Final[str] = "alert-container"
 
     @staticmethod
     def as_selector(

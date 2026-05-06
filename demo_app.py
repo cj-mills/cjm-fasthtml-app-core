@@ -2,10 +2,10 @@
 
 This demo showcases all the core utilities:
 - AppHtmlIds for centralized ID management
-- Alert components (success, error, warning, info)
 - HTMX request handling utilities
 - Page layout wrapper
 - Responsive navbar component
+- Confirm modal (V12 destructive-confirm composition)
 """
 
 from pathlib import Path
@@ -19,16 +19,10 @@ print("="*70)
 
 # Import all the library components
 from cjm_fasthtml_app_core.core.html_ids import AppHtmlIds
-from cjm_fasthtml_app_core.components.alerts import (
-    create_success_alert,
-    create_error_alert,
-    create_warning_alert,
-    create_info_alert
-)
 from cjm_fasthtml_app_core.components.confirm_modal import render_confirm_modal
 from cjm_fasthtml_app_core.core.htmx import handle_htmx_request, is_htmx_request
 from cjm_fasthtml_app_core.core.layout import wrap_with_layout
-from cjm_fasthtml_app_core.components.navbar import create_navbar, create_nav_link
+from cjm_fasthtml_app_core.components.navbar import create_navbar
 
 # Import utilities for styling
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
@@ -38,6 +32,7 @@ from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items
 from cjm_fasthtml_tailwind.core.base import combine_classes
 from cjm_fasthtml_daisyui.components.actions.button import btn, btn_colors, btn_sizes
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors
+from cjm_fasthtml_daisyui.components.feedback.alert import alert, alert_colors
 
 # Design system: V1 button roles, V11 icon-size roles
 from cjm_fasthtml_design_system.buttons import buttons
@@ -83,11 +78,6 @@ def index(request):
                 ),
                 Div(
                     Span("✓", cls=combine_classes(font_size._2xl, m.r(3))),
-                    Span("DaisyUI alert components (success, error, warning, info)"),
-                    cls=combine_classes(m.b(3))
-                ),
-                Div(
-                    Span("✓", cls=combine_classes(font_size._2xl, m.r(3))),
                     Span("HTMX request handling utilities"),
                     cls=combine_classes(m.b(3))
                 ),
@@ -99,6 +89,11 @@ def index(request):
                 Div(
                     Span("✓", cls=combine_classes(font_size._2xl, m.r(3))),
                     Span("Responsive navbar with mobile support"),
+                    cls=combine_classes(m.b(3))
+                ),
+                Div(
+                    Span("✓", cls=combine_classes(font_size._2xl, m.r(3))),
+                    Span("Generic destructive-confirm modal (V12)"),
                     cls=combine_classes(m.b(8))
                 ),
                 cls=combine_classes(text_align.left, m.b(8))
@@ -107,9 +102,9 @@ def index(request):
             # Navigation
             Div(
                 A(
-                    "View Alerts Demo",
-                    href=alerts.to(),
-                    hx_get=alerts.to(),
+                    "View Confirm Modal Demo",
+                    href=confirms.to(),
+                    hx_get=confirms.to(),
                     hx_target=f"#{AppHtmlIds.MAIN_CONTENT}",
                     hx_push_url="true",
                     cls=combine_classes(btn, btn_colors.primary, btn_sizes.lg, m.r(2))
@@ -137,48 +132,6 @@ def index(request):
     return handle_htmx_request(
         request,
         home_content,
-        wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar)
-    )
-
-@rt
-def alerts(request):
-    """Page demonstrating all alert types."""
-
-    def alerts_content():
-        return Div(
-            H1("Alert Components",
-               cls=combine_classes(font_size._3xl, font_weight.bold, m.b(6))),
-
-            P("Examples of all available alert types:",
-              cls=combine_classes(font_size.lg, m.b(8))),
-
-            # Success alert
-            H2("Success Alert", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3))),
-            create_success_alert("Operation completed successfully!"),
-
-            # Error alert
-            H2("Error Alert", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3), m.t(6))),
-            create_error_alert("An error occurred", "Please check your input and try again"),
-
-            # Warning alert
-            H2("Warning Alert", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3), m.t(6))),
-            create_warning_alert("Proceeding may cause issues", "Consider reviewing your changes"),
-
-            # Info alert
-            H2("Info Alert", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3), m.t(6))),
-            create_info_alert("New features available", "Check out the updated documentation"),
-
-            cls=combine_classes(
-                container,
-                max_w._4xl,
-                m.x.auto,
-                p(8)
-            )
-        )
-
-    return handle_htmx_request(
-        request,
-        alerts_content,
         wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar)
     )
 
@@ -308,11 +261,15 @@ def confirms(request):
 def confirms_action(request):
     """Demo handler for the confirm modal's HTMX action.
 
-    Returns a success alert and a Script that closes whichever dialog was open.
+    Returns a small daisyui alert and a Script that closes whichever dialog was open.
     Real consumers would do real destructive work here.
     """
     return Div(
-        create_success_alert("Confirmed (demo) — modal flow worked end-to-end."),
+        Div(
+            Span("Confirmed (demo) — modal flow worked end-to-end."),
+            role="alert",
+            cls=combine_classes(alert, alert_colors.success),
+        ),
         # Closing a non-open dialog is a no-op, so calling close() on both is safe.
         Script(
             "document.getElementById('demo-delete-modal').close();"
@@ -338,22 +295,7 @@ def features(request):
                   cls=combine_classes(m.b(2))),
                 Ul(
                     Li(f"MAIN_CONTENT = '{AppHtmlIds.MAIN_CONTENT}'"),
-                    Li(f"ALERT_CONTAINER = '{AppHtmlIds.ALERT_CONTAINER}'"),
                     Li(Code("as_selector()"), " helper for CSS selectors"),
-                    cls=combine_classes(m.l(6), m.b(6))
-                ),
-            ),
-
-            # Alert Components
-            Div(
-                H2("Alert Components", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3))),
-                P("Four alert types with auto-dismiss and optional details:",
-                  cls=combine_classes(m.b(2))),
-                Ul(
-                    Li(Code("create_success_alert()"), " - Success messages"),
-                    Li(Code("create_error_alert()"), " - Error messages with details"),
-                    Li(Code("create_warning_alert()"), " - Warning messages"),
-                    Li(Code("create_info_alert()"), " - Informational messages"),
                     cls=combine_classes(m.l(6), m.b(6))
                 ),
             ),
@@ -406,7 +348,6 @@ def features(request):
                   cls=combine_classes(m.b(2))),
                 Ul(
                     Li(Code("create_navbar()"), " - Full navbar with mobile support"),
-                    Li(Code("create_nav_link()"), " - HTMX navigation links"),
                     Li("Optional theme selector integration"),
                     Li("Mobile dropdown menu"),
                     cls=combine_classes(m.l(6), m.b(6))
@@ -432,7 +373,6 @@ navbar = create_navbar(
     title="App Core Demo",
     nav_items=[
         ("Home", index),
-        ("Alerts", alerts),
         ("Confirms", confirms),
         ("Features", features)
     ],
@@ -445,7 +385,7 @@ print("Demo App Ready!")
 print("="*70)
 print("\n📦 Library Components:")
 print("  • AppHtmlIds - Centralized ID management")
-print("  • Alert components - Success, error, warning, info")
+print("  • Confirm modal (V12) - Generic destructive-confirm dialog")
 print("  • HTMX utilities - Request handling helpers")
 print("  • Layout wrapper - Consistent page structure")
 print("  • Navbar component - Responsive navigation")
@@ -468,7 +408,6 @@ if __name__ == "__main__":
     print(f"🚀 Server: http://{display_host}:{port}")
     print("\n📍 Available routes:")
     print(f"  http://{display_host}:{port}/          - Homepage")
-    print(f"  http://{display_host}:{port}/alerts    - Alert demos")
     print(f"  http://{display_host}:{port}/confirms  - Confirm modal (V12) demo")
     print(f"  http://{display_host}:{port}/features  - Feature list")
     print("\n" + "="*70 + "\n")
