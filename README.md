@@ -12,40 +12,33 @@ pip install cjm_fasthtml_app_core
 ## Project Structure
 
     nbs/
-    ├── components/ (3)
-    │   ├── alerts.ipynb         # Alert components for displaying success, error, warning, and info messages
+    ├── components/ (2)
     │   ├── confirm_modal.ipynb  # Generic destructive-confirm modal &mdash; Cancel-on-left, Confirm-on-right, with backdrop click-to-dismiss and defensive form-submission guards. Codifies **Convention V12 (Destructive-confirm composition)** as running code.
     │   └── navbar.ipynb         # Responsive navigation bar components with mobile support
-    └── core/ (5)
-        ├── errors.ipynb    # Utilities for converting structured errors to FastHTML responses, alerts, and error pages
+    └── core/ (4)
         ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications
         ├── htmx.ipynb      # Utilities for handling HTMX requests and responses
         ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure
         └── routing.ipynb   # Routing utilities for FastHTML applications
 
-Total: 8 notebooks across 2 directories
+Total: 6 notebooks across 2 directories
 
 ## Module Dependencies
 
 ``` mermaid
 graph LR
-    components_alerts[components.alerts<br/>Alerts]
     components_confirm_modal[components.confirm_modal<br/>Confirm Modal]
     components_navbar[components.navbar<br/>Navbar]
-    core_errors[core.errors<br/>Error Utilities]
     core_html_ids[core.html_ids<br/>HTML IDs]
     core_htmx[core.htmx<br/>HTMX Utilities]
     core_layout[core.layout<br/>Layout]
     core_routing[core.routing<br/>routing]
 
-    components_alerts --> core_html_ids
     components_navbar --> core_html_ids
-    core_errors --> components_alerts
-    core_errors --> core_html_ids
     core_layout --> core_html_ids
 ```
 
-*5 cross-module dependencies detected*
+*2 cross-module dependencies detected*
 
 ## CLI Reference
 
@@ -54,63 +47,6 @@ No CLI commands found in this project.
 ## Module Overview
 
 Detailed documentation for each module in the project:
-
-### Alerts (`alerts.ipynb`)
-
-> Alert components for displaying success, error, warning, and info
-> messages
-
-#### Import
-
-``` python
-from cjm_fasthtml_app_core.components.alerts import (
-    create_success_alert,
-    create_error_alert,
-    create_warning_alert,
-    create_info_alert
-)
-```
-
-#### Functions
-
-``` python
-def _create_auto_dismiss_script(
-    timeout_ms:int=3000 # Time in milliseconds before auto-dismiss
-) -> FT: # Script element for auto-dismissing alerts
-    "Create a script that auto-dismisses the alert after a timeout."
-```
-
-``` python
-def create_success_alert(
-    message:str, # The success message to display
-    timeout_ms:int=3000 # Time in milliseconds before auto-dismiss
-) -> FT: # Div element containing the success alert
-    "Create a success alert that auto-dismisses."
-```
-
-``` python
-def create_error_alert(
-    message:str, # The error message to display
-    details:Optional[str]=None # Optional additional details text
-) -> FT: # Div element containing the error alert
-    "Create an error alert with optional details."
-```
-
-``` python
-def create_warning_alert(
-    message: str,  # The warning message to display
-    details: Optional[str] = None  # Optional additional details text
-) -> Div:  # Div element containing the warning alert
-    "Create a warning alert with optional details."
-```
-
-``` python
-def create_info_alert(
-    message:str, # The info message to display
-    details:Optional[str]=None # Optional additional details text
-) -> FT: # Div element containing the info alert
-    "Create an info alert with optional details."
-```
 
 ### Confirm Modal (`confirm_modal.ipynb`)
 
@@ -140,62 +76,6 @@ def render_confirm_modal(
     confirm_attrs:Optional[Dict[str, Any]]=None, # Caller-supplied attrs for the confirm button (hx_post / hx_vals / hx_swap / etc.)
 ) -> FT: # Dialog element implementing V12
     "Render a destructive-confirm modal (V12). Cancel-LEFT, Confirm-RIGHT, backdrop click-to-dismiss, defensive type=button. Body populated via HTMX swap into body_id."
-```
-
-### Error Utilities (`errors.ipynb`)
-
-> Utilities for converting structured errors to FastHTML responses,
-> alerts, and error pages
-
-#### Import
-
-``` python
-from cjm_fasthtml_app_core.core.errors import (
-    error_to_alert,
-    error_to_htmx_response,
-    create_error_page,
-    error_to_page
-)
-```
-
-#### Functions
-
-``` python
-def error_to_alert(
-    error: Any,  # Error object (BaseError from cjm-error-handling or standard Exception)
-    include_debug_info: bool = False  # Whether to include debug information in the alert
-) -> FT:  # Alert component (error or warning)
-    "Convert an error to an alert component."
-```
-
-``` python
-def error_to_htmx_response(
-    error: Any,  # Error object (BaseError or Exception)
-    target_id: str = AppHtmlIds.ALERT_CONTAINER,  # ID of element to update with error
-    include_debug_info: bool = False  # Whether to include debug information
-) -> FT:  # Alert component with correct ID for HTMX targeting
-    "Create an HTMX-compatible error response."
-```
-
-``` python
-def create_error_page(
-    title: str = "Error",  # Page title
-    message: str = "An error occurred",  # Main error message
-    details: Optional[str] = None,  # Optional details or debug info
-    show_home_link: bool = True,  # Whether to show a link back to home
-    home_path: str = "/"  # Path for the home link (defaults to root)
-) -> FT:  # Div element containing the full error page
-    "Create a full-page error display."
-```
-
-``` python
-def error_to_page(
-    error: Any,  # Error object (BaseError or Exception)
-    include_debug_info: bool = False,  # Whether to include debug information
-    show_home_link: bool = True,  # Whether to show a link back to home
-    home_path: str = "/"  # Path for the home link (defaults to root)
-) -> FT:  # Full error page component
-    "Convert an error to a full-page error display."
 ```
 
 ### HTML IDs (`html_ids.ipynb`)
@@ -288,7 +168,6 @@ def wrap_with_layout(
 
 ``` python
 from cjm_fasthtml_app_core.components.navbar import (
-    create_nav_link,
     create_navbar
 )
 ```
@@ -296,12 +175,12 @@ from cjm_fasthtml_app_core.components.navbar import (
 #### Functions
 
 ``` python
-def create_nav_link(
+def _create_nav_link(
     label:str, # Link text to display
     route, # FastHTML route object with .to() method
     target_id:str=AppHtmlIds.MAIN_CONTENT # HTMX target container ID
 ) -> FT: # Anchor element with HTMX attributes
-    "Create a navigation link with HTMX attributes for SPA-like behavior."
+    "Create a navigation link with HTMX attributes for SPA-like behavior. Internal helper for `create_navbar`."
 ```
 
 ``` python
