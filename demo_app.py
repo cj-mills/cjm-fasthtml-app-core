@@ -107,7 +107,7 @@ def index(request):
                     hx_get=confirms.to(),
                     hx_target=f"#{AppHtmlIds.MAIN_CONTENT}",
                     hx_push_url="true",
-                    cls=combine_classes(btn, btn_colors.primary, btn_sizes.lg, m.r(2))
+                    cls=combine_classes(buttons.page_primary, m.r(2))
                 ),
                 A(
                     "View Features",
@@ -115,7 +115,7 @@ def index(request):
                     hx_get=features.to(),
                     hx_target=f"#{AppHtmlIds.MAIN_CONTENT}",
                     hx_push_url="true",
-                    cls=combine_classes(btn, btn_colors.secondary, btn_sizes.lg)
+                    cls=buttons.page_primary
                 ),
             ),
 
