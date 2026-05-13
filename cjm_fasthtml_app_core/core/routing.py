@@ -28,6 +28,13 @@ class APIRouter(_ft.APIRouter):
 
     Restores pre-0.14 flat URL behavior for the `init_*_router(prefix)`
     factory pattern used across the cjm-* ecosystem.
+
+    Also overrides `__getattr__` to raise a clean `AttributeError` when an
+    attribute lookup falls through. FastHTML 0.14's base implementation
+    calls `super().__getattr__(self, name)`, but `object` has no
+    `__getattr__`, so that path produces a confusing
+    `'super' object has no attribute '__getattr__'` error instead of the
+    expected `AttributeError` for any non-route attribute access.
     """
 
     def __call__(
@@ -50,6 +57,18 @@ class APIRouter(_ft.APIRouter):
                                 body_wrap or self.body_wrap))
             return wrapped
         return f(path) if callable(path) else f
+
+    def __getattr__(self, name):
+        # Look up registered route functions via rt_funcs; raise a clean
+        # AttributeError if not found. FastHTML 0.14's base implementation
+        # falls through to `super().__getattr__(self, name)` which doesn't
+        # exist on `object` and produces a misleading error message.
+        try:
+            return getattr(self.rt_funcs, name)
+        except AttributeError:
+            raise AttributeError(
+                f"{type(self).__name__!r} object has no attribute {name!r}"
+            ) from None
 
 # %% ../../nbs/core/routing.ipynb #48a5e724
 # Re-bind HTTP-method shortcuts (get, post, delete, put, patch, options, head, trace)

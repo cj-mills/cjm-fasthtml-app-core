@@ -25,5 +25,7 @@ d = { 'settings': { 'branch': 'main',
                                                                                                       'cjm_fasthtml_app_core/core/routing.py'),
                                                     'cjm_fasthtml_app_core.core.routing.APIRouter.__call__': ( 'core/routing.html#apirouter.__call__',
                                                                                                                'cjm_fasthtml_app_core/core/routing.py'),
+                                                    'cjm_fasthtml_app_core.core.routing.APIRouter.__getattr__': ( 'core/routing.html#apirouter.__getattr__',
+                                                                                                                  'cjm_fasthtml_app_core/core/routing.py'),
                                                     'cjm_fasthtml_app_core.core.routing.register_routes': ( 'core/routing.html#register_routes',
                                                                                                             'cjm_fasthtml_app_core/core/routing.py')}}}
