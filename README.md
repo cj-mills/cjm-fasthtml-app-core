@@ -203,7 +203,8 @@ def create_navbar(
 
 ``` python
 from cjm_fasthtml_app_core.core.routing import (
-    register_routes
+    register_routes,
+    APIRouter
 )
 ```
 
@@ -215,4 +216,20 @@ def register_routes(
     *routers  # One or more APIRouter instances to register
 ) -> None:  # No return value
     "Register multiple APIRouter instances to a FastHTML app at once."
+```
+
+#### Classes
+
+``` python
+class APIRouter(APIRouter):
+    """
+    APIRouter override that derives route URLs and rt_funcs names from
+    `func.__name__` rather than FastHTML 0.14's `nested_name()` (which
+    prepends the containing function's name to routes defined inside
+    factory functions).
+    
+    Restores pre-0.14 flat URL behavior for the `init_*_router(prefix)`
+    factory pattern used across the cjm-* ecosystem.
+    """
+    
 ```
