@@ -20,23 +20,25 @@ print("="*70)
 # Import all the library components
 from cjm_fasthtml_app_core.core.html_ids import AppHtmlIds
 from cjm_fasthtml_app_core.components.confirm_modal import render_confirm_modal
+from cjm_fasthtml_app_core.components.empty_state import render_empty_state
 from cjm_fasthtml_app_core.core.htmx import handle_htmx_request, is_htmx_request
 from cjm_fasthtml_app_core.core.layout import wrap_with_layout
 from cjm_fasthtml_app_core.components.navbar import create_navbar
 
 # Import utilities for styling
 from cjm_fasthtml_tailwind.utilities.spacing import p, m
-from cjm_fasthtml_tailwind.utilities.sizing import container, max_w
+from cjm_fasthtml_tailwind.utilities.sizing import container, max_w, h
 from cjm_fasthtml_tailwind.utilities.typography import font_size, font_weight, text_align
-from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, items, gap
+from cjm_fasthtml_tailwind.utilities.flexbox_and_grid import flex_display, flex_direction, items, gap
 from cjm_fasthtml_tailwind.core.base import combine_classes
 from cjm_fasthtml_daisyui.components.actions.button import btn, btn_colors, btn_sizes
 from cjm_fasthtml_daisyui.components.data_display.badge import badge, badge_colors
 from cjm_fasthtml_daisyui.components.feedback.alert import alert, alert_colors
 
-# Design system: V1 button roles, V11 icon-size roles
+# Design system: V1 button roles, V11 icon-size roles, V10 panel roles
 from cjm_fasthtml_design_system.buttons import buttons
 from cjm_fasthtml_design_system.icons import icons
+from cjm_fasthtml_design_system.panels import panels
 from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
 print("✓ All library components imported successfully")
@@ -94,6 +96,11 @@ def index(request):
                 Div(
                     Span("✓", cls=combine_classes(font_size._2xl, m.r(3))),
                     Span("Generic destructive-confirm modal (V12)"),
+                    cls=combine_classes(m.b(3))
+                ),
+                Div(
+                    Span("✓", cls=combine_classes(font_size._2xl, m.r(3))),
+                    Span("Empty-state component (V8)"),
                     cls=combine_classes(m.b(8))
                 ),
                 cls=combine_classes(text_align.left, m.b(8))
@@ -105,6 +112,14 @@ def index(request):
                     "View Confirm Modal Demo",
                     href=confirms.to(),
                     hx_get=confirms.to(),
+                    hx_target=f"#{AppHtmlIds.MAIN_CONTENT}",
+                    hx_push_url="true",
+                    cls=combine_classes(buttons.page_primary, m.r(2))
+                ),
+                A(
+                    "View Empty State Demo",
+                    href=empty_states.to(),
+                    hx_get=empty_states.to(),
                     hx_target=f"#{AppHtmlIds.MAIN_CONTENT}",
                     hx_push_url="true",
                     cls=combine_classes(buttons.page_primary, m.r(2))
@@ -280,6 +295,181 @@ def confirms_action(request):
 
 
 @rt
+def empty_states(request):
+    """Page demonstrating render_empty_state (V8 anatomy composition helper).
+
+    Renders the canonical empty-state variants (full, minimal, title+detail no icon,
+    title+CTA no icon) plus in-context demos against both V10 panel backgrounds
+    (base_200 minimal_container, base_100 content_card inside a base_200 viewport)
+    so cross-theme tours can verify legibility on both surfaces.
+    """
+
+    def empty_states_content():
+        # Bound the wrapper's grow() with a flex-column parent at a fixed height so
+        # the wrapper's vertical-fill behavior is visually demonstrable. The flex
+        # parent context is necessary because empty_states.wrapper composes grow(),
+        # which requires a flex container with bounded cross-axis to fill.
+        bounded_parent_cls = combine_classes(
+            h(96), panels.minimal_container,
+            flex_display, flex_direction.col,
+        )
+        compact_bounded_parent_cls = combine_classes(
+            h(48), panels.minimal_container,
+            flex_display, flex_direction.col,
+        )
+        med_bounded_parent_cls = combine_classes(
+            h(64), panels.minimal_container,
+            flex_display, flex_direction.col,
+        )
+
+        return Div(
+            H1(
+                "Empty State (V8)",
+                cls=combine_classes(font_size._3xl, font_weight.bold, m.b(2)),
+            ),
+            P(
+                "render_empty_state composes V8 anatomy slots (wrapper / icon / "
+                "title / detail) into a Div with canonical child ordering (icon → "
+                "title → detail → CTA). All slots are optional except message. "
+                "Codifies V8 (Empty-state anatomy) per the V12 convention/implementation "
+                "split — anatomy in design-system, rendering helper here.",
+                cls=combine_classes(font_size.lg, m.b(6)),
+            ),
+
+            # Canonical full composition ───────────────────────────────────
+            H2(
+                "Canonical full composition (icon + title + detail + CTA)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "All four V8 slots plus an optional V1 CTA. The wrapper's grow() "
+                "fills the bounded flex parent; the parent's height determines the "
+                "fill region.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_empty_state(
+                    message="No transcription sources selected",
+                    detail="Add a source from the browser to begin.",
+                    icon_name="inbox",
+                    cta=Button("Add a source", cls=buttons.primary_action),
+                ),
+                cls=combine_classes(bounded_parent_cls, m.b(8)),
+            ),
+
+            # Minimal — title only ─────────────────────────────────────────
+            H2(
+                "Minimal — title only",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "The simplest empty state: just the title slot inside the wrapper. "
+                "Used when context is self-evident or vertical space is constrained.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_empty_state(message="No items available"),
+                cls=combine_classes(compact_bounded_parent_cls, m.b(8)),
+            ),
+
+            # Title + detail (no icon) ─────────────────────────────────────
+            H2(
+                "Title + detail (no icon)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Drops the icon slot when iconography would add visual weight "
+                "without informational gain. Common shape for management-page "
+                "empty lists where the surrounding chrome already conveys context.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_empty_state(
+                    message="No graphs committed yet",
+                    detail="Complete a workflow to commit a graph.",
+                ),
+                cls=combine_classes(med_bounded_parent_cls, m.b(8)),
+            ),
+
+            # With CTA only (no detail, no icon) ───────────────────────────
+            H2(
+                "Title + CTA only (no detail, no icon)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Drops detail when the title carries enough context and the CTA "
+                "verb is self-explanatory. Tight three-line shape (title + spacing "
+                "+ CTA).",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_empty_state(
+                    message="No documents yet",
+                    cta=Button("Start a workflow", cls=buttons.primary_action),
+                ),
+                cls=combine_classes(med_bounded_parent_cls, m.b(8)),
+            ),
+
+            # In-context: base_200 background ──────────────────────────────
+            H2(
+                "In-context: base_200 (panels.minimal_container)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Canonical empty state rendered directly inside a base_200 panel. "
+                "Tour across silk / cyberpunk / abyss / retro to verify icon and "
+                "text legibility against each theme's base_200 fill.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_empty_state(
+                    message="No transcription sources selected",
+                    detail="Add a source from the browser to begin.",
+                    icon_name="inbox",
+                ),
+                cls=combine_classes(
+                    h(80), p(4), panels.minimal_container,
+                    flex_display, flex_direction.col, m.b(8),
+                ),
+            ),
+
+            # In-context: base_100 inside base_200 ─────────────────────────
+            H2(
+                "In-context: base_100 (panels.content_card inside base_200)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Canonical empty state rendered inside a base_100 content_card, "
+                "which is itself rendered inside a base_200 viewport. This mirrors "
+                "the canonical card-stack focus-slot empty-state composition.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                Div(
+                    render_empty_state(
+                        message="No transcription sources selected",
+                        detail="Add a source from the browser to begin.",
+                        icon_name="inbox",
+                    ),
+                    cls=combine_classes(
+                        h(80), p(4), panels.content_card,
+                        flex_display, flex_direction.col,
+                    ),
+                ),
+                cls=combine_classes(p(3), panels.minimal_container, m.b(6)),
+            ),
+
+            cls=combine_classes(container, max_w._4xl, m.x.auto, p(8)),
+        )
+
+    return handle_htmx_request(
+        request,
+        empty_states_content,
+        wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar),
+    )
+
+
+@rt
 def features(request):
     """Page listing all library features."""
 
@@ -313,6 +503,25 @@ def features(request):
                     Li("Optional Lucide icon prefix on the confirm button"),
                     Li("Composes V1 ", Code("buttons.destructive_confirm"), " + ",
                        Code("buttons.soft_dismissal")),
+                    cls=combine_classes(m.l(6), m.b(6))
+                ),
+            ),
+
+            # Empty State (V8)
+            Div(
+                H2("Empty State (V8)", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3))),
+                P("Generic empty-state component — centered icon-above-title-above-detail "
+                  "composition with optional CTA. Codifies V8 (Empty-state anatomy) per the "
+                  "V12 convention/implementation split (anatomy in design-system, rendering "
+                  "helper here).",
+                  cls=combine_classes(m.b(2))),
+                Ul(
+                    Li(Code("render_empty_state()"), " - Icon + title + detail + CTA composition"),
+                    Li("All slots optional except ", Code("message"), " (title text)"),
+                    Li("Canonical child ordering: icon → title → detail → CTA"),
+                    Li("Composes V8 ", Code("empty_states"), " anatomy slots + V11 ",
+                       Code("icons.empty_state"), " size + V13 text tiers"),
+                    Li(Code("cta"), " accepts any FT (Button, A, Div), not just Button"),
                     cls=combine_classes(m.l(6), m.b(6))
                 ),
             ),
@@ -374,6 +583,7 @@ navbar = create_navbar(
     nav_items=[
         ("Home", index),
         ("Confirms", confirms),
+        ("Empty States", empty_states),
         ("Features", features)
     ],
     home_route=index,
@@ -386,6 +596,7 @@ print("="*70)
 print("\n📦 Library Components:")
 print("  • AppHtmlIds - Centralized ID management")
 print("  • Confirm modal (V12) - Generic destructive-confirm dialog")
+print("  • Empty state (V8) - Generic empty-state composition helper")
 print("  • HTMX utilities - Request handling helpers")
 print("  • Layout wrapper - Consistent page structure")
 print("  • Navbar component - Responsive navigation")
@@ -407,9 +618,10 @@ if __name__ == "__main__":
 
     print(f"🚀 Server: http://{display_host}:{port}")
     print("\n📍 Available routes:")
-    print(f"  http://{display_host}:{port}/          - Homepage")
-    print(f"  http://{display_host}:{port}/confirms  - Confirm modal (V12) demo")
-    print(f"  http://{display_host}:{port}/features  - Feature list")
+    print(f"  http://{display_host}:{port}/               - Homepage")
+    print(f"  http://{display_host}:{port}/confirms       - Confirm modal (V12) demo")
+    print(f"  http://{display_host}:{port}/empty_states   - Empty state (V8) demo")
+    print(f"  http://{display_host}:{port}/features       - Feature list")
     print("\n" + "="*70 + "\n")
 
     # Open browser after a short delay

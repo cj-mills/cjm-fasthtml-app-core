@@ -12,8 +12,9 @@ pip install cjm_fasthtml_app_core
 ## Project Structure
 
     nbs/
-    ├── components/ (2)
+    ├── components/ (3)
     │   ├── confirm_modal.ipynb  # Generic destructive-confirm modal &mdash; Cancel-on-left, Confirm-on-right, with backdrop click-to-dismiss and defensive form-submission guards. Codifies **Convention V12 (Destructive-confirm composition)** as running code.
+    │   ├── empty_state.ipynb    # Generic empty-state component &mdash; a centered icon-above-title-above-detail composition optionally including a call-to-action, composing V8 anatomy slots into a single rendering helper. Codifies **Convention V8 (Empty-state anatomy)** as running code per the V12 convention/implementation split: V8 anatomy stays design-system-owned (`cjm-fasthtml-design-system/nbs/empty_states.ipynb`); the rendering helper that composes those slots into FT lives here.
     │   └── navbar.ipynb         # Responsive navigation bar components with mobile support
     └── core/ (4)
         ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications
@@ -21,13 +22,14 @@ pip install cjm_fasthtml_app_core
         ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure
         └── routing.ipynb   # Routing utilities for FastHTML applications
 
-Total: 6 notebooks across 2 directories
+Total: 7 notebooks across 2 directories
 
 ## Module Dependencies
 
 ``` mermaid
 graph LR
     components_confirm_modal[components.confirm_modal<br/>Confirm Modal]
+    components_empty_state[components.empty_state<br/>Empty State]
     components_navbar[components.navbar<br/>Navbar]
     core_html_ids[core.html_ids<br/>HTML IDs]
     core_htmx[core.htmx<br/>HTMX Utilities]
@@ -76,6 +78,38 @@ def render_confirm_modal(
     confirm_attrs:Optional[Dict[str, Any]]=None, # Caller-supplied attrs for the confirm button (hx_post / hx_vals / hx_swap / etc.)
 ) -> FT: # Dialog element implementing V12
     "Render a destructive-confirm modal (V12). Cancel-LEFT, Confirm-RIGHT, backdrop click-to-dismiss, defensive type=button. Body populated via HTMX swap into body_id."
+```
+
+### Empty State (`empty_state.ipynb`)
+
+> Generic empty-state component — a centered
+> icon-above-title-above-detail composition optionally including a
+> call-to-action, composing V8 anatomy slots into a single rendering
+> helper. Codifies **Convention V8 (Empty-state anatomy)** as running
+> code per the V12 convention/implementation split: V8 anatomy stays
+> design-system-owned
+> (`cjm-fasthtml-design-system/nbs/empty_states.ipynb`); the rendering
+> helper that composes those slots into FT lives here.
+
+#### Import
+
+``` python
+from cjm_fasthtml_app_core.components.empty_state import (
+    render_empty_state
+)
+```
+
+#### Functions
+
+``` python
+def render_empty_state(
+    message:str, # Primary empty-state message (single sentence in the title slot)
+    detail:Optional[str]=None, # Optional supporting line rendered below the title in the detail slot
+    icon_name:Optional[str]=None, # Optional Lucide icon name; rendered at V11 icons.empty_state size with V8 icon opacity
+    cta:Optional[FT]=None, # Optional call-to-action element appended as the last wrapper child (typically Button with V1 buttons.primary_action)
+    id:Optional[str]=None, # Optional outer Div id (for HTMX targeting or consumer ID-schema integration)
+) -> FT: # Div implementing V8 empty-state anatomy
+    "Render a canonical empty-state component per V8 anatomy (icon &rarr; title &rarr; detail &rarr; CTA child ordering, all slots optional except message)."
 ```
 
 ### HTML IDs (`html_ids.ipynb`)
