@@ -12,17 +12,18 @@ pip install cjm_fasthtml_app_core
 ## Project Structure
 
     nbs/
-    ├── components/ (3)
-    │   ├── confirm_modal.ipynb  # Generic destructive-confirm modal &mdash; Cancel-on-left, Confirm-on-right, with backdrop click-to-dismiss and defensive form-submission guards. Codifies **Convention V12 (Destructive-confirm composition)** as running code.
-    │   ├── empty_state.ipynb    # Generic empty-state component &mdash; a centered icon-above-title-above-detail composition optionally including a call-to-action, composing V8 anatomy slots into a single rendering helper. Codifies **Convention V8 (Empty-state anatomy)** as running code per the V12 convention/implementation split: V8 anatomy stays design-system-owned (`cjm-fasthtml-design-system/nbs/empty_states.ipynb`); the rendering helper that composes those slots into FT lives here.
-    │   └── navbar.ipynb         # Responsive navigation bar components with mobile support
+    ├── components/ (4)
+    │   ├── confirm_modal.ipynb     # Generic destructive-confirm modal &mdash; Cancel-on-left, Confirm-on-right, with backdrop click-to-dismiss and defensive form-submission guards. Codifies **Convention V12 (Destructive-confirm composition)** as running code.
+    │   ├── empty_state.ipynb       # Generic empty-state component &mdash; a centered icon-above-title-above-detail composition optionally including a call-to-action, composing V8 anatomy slots into a single rendering helper. Codifies **Convention V8 (Empty-state anatomy)** as running code per the V12 convention/implementation split: V8 anatomy stays design-system-owned (`cjm-fasthtml-design-system/nbs/empty_states.ipynb`); the rendering helper that composes those slots into FT lives here.
+    │   ├── navbar.ipynb            # Responsive navigation bar components with mobile support
+    │   └── step_header_band.ipynb  # Step-level header band rendering helper &mdash; the title + optional subtitle on the left, optional trailing slot on the right composition that introduces each workflow step inside StepFlow's per-step render. Composes V2 anatomy slots into a single FT-returning helper. Codifies **Convention V2 (Step header band anatomy)** as running code per the V12 convention/implementation split: V2 anatomy stays design-system-owned (`cjm-fasthtml-design-system/nbs/step_chrome.ipynb`); the rendering helper that composes those slots into FT lives here.
     └── core/ (4)
         ├── html_ids.ipynb  # Base HTML ID constants for FastHTML applications
         ├── htmx.ipynb      # Utilities for handling HTMX requests and responses
         ├── layout.ipynb    # Page layout utilities for wrapping content with common page structure
         └── routing.ipynb   # Routing utilities for FastHTML applications
 
-Total: 7 notebooks across 2 directories
+Total: 8 notebooks across 2 directories
 
 ## Module Dependencies
 
@@ -31,6 +32,7 @@ graph LR
     components_confirm_modal[components.confirm_modal<br/>Confirm Modal]
     components_empty_state[components.empty_state<br/>Empty State]
     components_navbar[components.navbar<br/>Navbar]
+    components_step_header_band[components.step_header_band<br/>Step Header Band]
     core_html_ids[core.html_ids<br/>HTML IDs]
     core_htmx[core.htmx<br/>HTMX Utilities]
     core_layout[core.layout<br/>Layout]
@@ -273,4 +275,31 @@ class APIRouter(APIRouter):
     expected `AttributeError` for any non-route attribute access.
     """
     
+```
+
+### Step Header Band (`step_header_band.ipynb`)
+
+> Step-level header band rendering helper — the title + optional
+> subtitle on the left, optional trailing slot on the right composition
+> that introduces each workflow step inside StepFlow’s per-step render.
+> Composes V2 anatomy slots into a single FT-returning helper. Codifies
+> **Convention V2 (Step header band anatomy)** as running code per the
+> V12 convention/implementation split: V2 anatomy stays
+> design-system-owned
+> (`cjm-fasthtml-design-system/nbs/step_chrome.ipynb`); the rendering
+> helper that composes those slots into FT lives here.
+
+#### Import
+
+``` python
+from cjm_fasthtml_app_core.components.step_header_band import (
+    render_step_header_band
+)
+```
+
+#### Functions
+
+``` python
+def render_step_header_band(
+    "Render a canonical step-level header band per V2 anatomy (title block on the left, optional trailing on the right). Responsive compression at the M2/M3 boundary is encoded in the V2 slot class strings; no per-call knobs needed."
 ```

@@ -21,6 +21,7 @@ print("="*70)
 from cjm_fasthtml_app_core.core.html_ids import AppHtmlIds
 from cjm_fasthtml_app_core.components.confirm_modal import render_confirm_modal
 from cjm_fasthtml_app_core.components.empty_state import render_empty_state
+from cjm_fasthtml_app_core.components.step_header_band import render_step_header_band
 from cjm_fasthtml_app_core.core.htmx import handle_htmx_request, is_htmx_request
 from cjm_fasthtml_app_core.core.layout import wrap_with_layout
 from cjm_fasthtml_app_core.components.navbar import create_navbar
@@ -39,6 +40,7 @@ from cjm_fasthtml_daisyui.components.feedback.alert import alert, alert_colors
 from cjm_fasthtml_design_system.buttons import buttons
 from cjm_fasthtml_design_system.icons import icons
 from cjm_fasthtml_design_system.panels import panels
+from cjm_fasthtml_design_system.step_chrome import step_header_band
 from cjm_fasthtml_lucide_icons.factory import lucide_icon
 
 print("✓ All library components imported successfully")
@@ -470,6 +472,164 @@ def empty_states(request):
 
 
 @rt
+def step_header_band_demo(request):
+    """Page demonstrating render_step_header_band (V2 anatomy composition helper).
+
+    Renders the three canonical call shapes (multi-trigger pattern, single-trigger
+    pattern, title-only pattern) plus an LG5 verification note. V2 is the
+    design-system's first responsive role catalog — the title compresses
+    (text-2xl → lg:text-3xl) and the subtitle hides (hidden → lg:block) at the
+    lg: breakpoint (1024px, M2/M3 boundary). Resize the browser through 1024px
+    to verify the snap behavior at the mode boundary (per DR5).
+    """
+
+    def step_header_band_content():
+        # Mock disclosure triggers (settings cog + keyboard hints icon).
+        # Real triggers come from cjm-fasthtml-card-stack and
+        # cjm-fasthtml-keyboard-navigation; these mocks mirror their shape
+        # (V11 ghost_button icon size + V1 modal_disclosure button role).
+        def mock_trigger(icon_name):
+            return Button(
+                lucide_icon(icon_name, size=icons.ghost_button),
+                cls=buttons.modal_disclosure,
+            )
+
+        return Div(
+            H1(
+                "Step Header Band (V2)",
+                cls=combine_classes(font_size._3xl, font_weight.bold, m.b(2)),
+            ),
+            P(
+                "render_step_header_band composes V2 anatomy slots (layout / title / "
+                "subtitle / trailing) into a Div with the canonical structural "
+                "ordering (title block on the left, optional trailing on the right). "
+                "Codifies V2 (Step header band anatomy) per the V12 convention/"
+                "implementation split — anatomy in design-system, rendering helper "
+                "here. The design-system's first responsive role catalog.",
+                cls=combine_classes(font_size.lg, m.b(6)),
+            ),
+
+            # LG5 verification note ─────────────────────────────────────────
+            Div(
+                H2(
+                    "LG5 verification — resize the browser to confirm compression",
+                    cls=combine_classes(font_size.xl, font_weight.semibold, m.b(2)),
+                ),
+                P(
+                    "V2 encodes mode-aware class strings that change at the lg: "
+                    "breakpoint (1024px, the M2↔M3 boundary per layout-system.md):",
+                    cls=combine_classes(m.b(2)),
+                ),
+                Ul(
+                    Li("Width < 1024px (M1 Pocket + M2 Compact): title compresses "
+                       "to text-2xl, subtitle is hidden."),
+                    Li("Width ≥ 1024px (M3 Standard +): title is text-3xl, subtitle "
+                       "shows below the title."),
+                    Li("Transition snaps at 1024px per DR5 — mode boundaries are "
+                       "layout shifts; within a mode, only density may shift."),
+                    cls=combine_classes(m.l(6), m.b(2)),
+                ),
+                cls=combine_classes(p(4), panels.minimal_container, m.b(8)),
+            ),
+
+            # Multi-trigger pattern (review / segment-align) ───────────────
+            H2(
+                "Multi-trigger pattern (review / segment-align)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "The most common pattern at consumers that pair a settings trigger "
+                "with a keyboard-hints trigger. The consumer wraps both triggers in "
+                "a Div with step_header_band.trailing applied to the wrapper. "
+                "Segment-align's zone-aware variant wraps the settings trigger in a "
+                "stable-ID Div for OOB retargeting on zone change — accepted as "
+                "trailing content without V2 needing to know about OOB semantics.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_step_header_band(
+                    title="Segment & Align",
+                    subtitle="Decompose text into segments and align with audio timestamps.",
+                    trailing=Div(
+                        mock_trigger("settings-2"),
+                        mock_trigger("keyboard"),
+                        cls=step_header_band.trailing,
+                    ),
+                ),
+                cls=combine_classes(p(4), panels.minimal_container, m.b(8)),
+            ),
+
+            # Single-trigger pattern (source-selects) ───────────────────────
+            H2(
+                "Single-trigger pattern (source-selects)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Source-select consumers pass a single hints_trigger directly as the "
+                "right-side child of the layout Div — no wrapping needed because "
+                "there's nothing to group. The outer layout's justify.between "
+                "positions the single trigger at the right edge automatically.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_step_header_band(
+                    title="Select Source Material",
+                    subtitle="Choose transcription sources to decompose into a structural spine.",
+                    trailing=mock_trigger("keyboard"),
+                ),
+                cls=combine_classes(p(4), panels.minimal_container, m.b(8)),
+            ),
+
+            # Title-only pattern ────────────────────────────────────────────
+            H2(
+                "Title-only pattern (no subtitle, no trailing)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Consumers can omit the subtitle and the trailing slot entirely when "
+                "context is self-evident and no disclosure affordances are needed. "
+                "The H2 title alone carries enough identity for an established user; "
+                "the layout Div still applies (flex+justify-between) but with only "
+                "one flex child.",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_step_header_band(title="Verify"),
+                cls=combine_classes(p(4), panels.minimal_container, m.b(8)),
+            ),
+
+            # Title + trailing only (no subtitle) ────────────────────────────
+            H2(
+                "Title + trailing (no subtitle)",
+                cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3)),
+            ),
+            P(
+                "Omits the subtitle while keeping a trailing affordance. The "
+                "responsive subtitle slot's hide-at-M1/M2 behavior is inherent to "
+                "the slot's class string, so omitting the parameter is functionally "
+                "the same as letting CSS hide it — but it skips emitting the P "
+                "element entirely (one less DOM node).",
+                cls=combine_classes(m.b(4)),
+            ),
+            Div(
+                render_step_header_band(
+                    title="Documents",
+                    trailing=mock_trigger("keyboard"),
+                ),
+                cls=combine_classes(p(4), panels.minimal_container, m.b(8)),
+            ),
+
+            cls=combine_classes(container, max_w._4xl, m.x.auto, p(8)),
+        )
+
+    return handle_htmx_request(
+        request,
+        step_header_band_content,
+        wrap_fn=lambda content: wrap_with_layout(content, navbar=navbar),
+    )
+
+
+@rt
 def features(request):
     """Page listing all library features."""
 
@@ -522,6 +682,30 @@ def features(request):
                     Li("Composes V8 ", Code("empty_states"), " anatomy slots + V11 ",
                        Code("icons.empty_state"), " size + V13 text tiers"),
                     Li(Code("cta"), " accepts any FT (Button, A, Div), not just Button"),
+                    cls=combine_classes(m.l(6), m.b(6))
+                ),
+            ),
+
+            # Step Header Band (V2)
+            Div(
+                H2("Step Header Band (V2)", cls=combine_classes(font_size._2xl, font_weight.bold, m.b(3))),
+                P("Generic step-level header band component — H2 title + optional P subtitle "
+                  "on the left, optional trailing slot on the right. Codifies V2 (Step header "
+                  "band anatomy) per the V12 convention/implementation split (anatomy in "
+                  "design-system, rendering helper here). The design-system's first "
+                  "responsive role catalog — encodes LG5 compression at the M2/M3 boundary "
+                  "via CSS, with no per-call knobs.",
+                  cls=combine_classes(m.b(2))),
+                Ul(
+                    Li(Code("render_step_header_band()"), " - Title + subtitle + trailing composition"),
+                    Li("All slots optional except ", Code("title"), " (H2 text)"),
+                    Li("Canonical structural ordering: title block (H2 + optional P) on left, "
+                       "trailing on right"),
+                    Li("Responsive snap at the ", Code("lg:"), " breakpoint (1024px, M2↔M3 boundary): "
+                       "title compresses, subtitle hides at narrower widths"),
+                    Li("Composes V2 ", Code("step_header_band"), " anatomy slots + V13 ",
+                       Code("text_tiers.secondary"), " for subtitle"),
+                    Li(Code("trailing"), " accepts any FT (single trigger, pre-wrapped Div, badge)"),
                     cls=combine_classes(m.l(6), m.b(6))
                 ),
             ),
@@ -584,6 +768,7 @@ navbar = create_navbar(
         ("Home", index),
         ("Confirms", confirms),
         ("Empty States", empty_states),
+        ("Step Header", step_header_band_demo),
         ("Features", features)
     ],
     home_route=index,
@@ -597,6 +782,7 @@ print("\n📦 Library Components:")
 print("  • AppHtmlIds - Centralized ID management")
 print("  • Confirm modal (V12) - Generic destructive-confirm dialog")
 print("  • Empty state (V8) - Generic empty-state composition helper")
+print("  • Step header band (V2) - Step-level chrome with LG5 responsive compression")
 print("  • HTMX utilities - Request handling helpers")
 print("  • Layout wrapper - Consistent page structure")
 print("  • Navbar component - Responsive navigation")
@@ -621,6 +807,7 @@ if __name__ == "__main__":
     print(f"  http://{display_host}:{port}/               - Homepage")
     print(f"  http://{display_host}:{port}/confirms       - Confirm modal (V12) demo")
     print(f"  http://{display_host}:{port}/empty_states   - Empty state (V8) demo")
+    print(f"  http://{display_host}:{port}/step_header_band_demo - Step header band (V2) demo")
     print(f"  http://{display_host}:{port}/features       - Feature list")
     print("\n" + "="*70 + "\n")
 
